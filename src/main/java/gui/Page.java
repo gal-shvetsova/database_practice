@@ -13,5 +13,7 @@ public abstract class Page extends JFrame {
     public Page(String name) {
         super(name);
         setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
+        Container container = getContentPane();
+        container.setLayout (new FlowLayout(FlowLayout.CENTER));
     }
 }

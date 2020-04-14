@@ -16,4 +16,8 @@ public class Person {
         this.surname = surname;
         this.name = name;
     }
+
+    public Role getRole() {
+        return role;
+    }
 }
