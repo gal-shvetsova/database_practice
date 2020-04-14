@@ -1,5 +1,6 @@
 package dao;
 
+import model.Person;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
 import java.io.*;
@@ -10,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbstractDao {
+abstract public class AbstractDao {
     private static final Connection connection = JdbcConnection.getConnection();
 
      protected static <E> List<E> query(String sql, RowMapper<E> rowMapper) {
@@ -25,6 +26,17 @@ public class AbstractDao {
                 row++;
             }
             return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected static void query(String sql) {
+        Connection conn = getConnection();
+        try {
+            PreparedStatement preStatement = conn.prepareStatement(sql);
+            preStatement.executeQuery();
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
