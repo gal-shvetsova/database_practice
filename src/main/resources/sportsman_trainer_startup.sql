@@ -23,18 +23,18 @@ create or replace trigger tr_sportsman_trainer_insert
     before insert or update
     on sportsman_trainer
     for each row
-declare kind_sportsman varchar(100);
-        kind_trainer varchar(100);
+declare role_sportsman varchar(100);
+        role_trainer varchar(100);
 begin
-    select kind
-    into kind_sportsman
+    select role
+    into role_sportsman
     from PERSON where
             PERSON.ID = :new.ID_SPORTSMAN;
-    select kind
-    into kind_trainer
-    from PERSON where PERSON.ID = :new.ID_TRAINER;
+    select role
+    into role_trainer
+    from PERSON where   PERSON.ID = :new.ID_TRAINER;
 
-    if (kind_sportsman != 'SPORTSMAN' or kind_trainer != 'TRAINER')
+    if (role_sportsman != 'SPORTSMAN' or role_trainer != 'TRAINER')
     then
         RAISE_APPLICATION_ERROR( -20001,
                                  'First person must be sportsman, second person must be trainer' );

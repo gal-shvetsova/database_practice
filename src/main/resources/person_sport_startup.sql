@@ -29,13 +29,13 @@ create or replace trigger tr_person_sport_insert
     before insert or update
     on person_sport
     for each row
-declare kind_person varchar(100);
+declare role_person varchar(100);
 begin
-    select kind
-    into kind_person
+    select role
+    into role_person
     from PERSON where
             PERSON.ID = :new.ID_PERSON;
-    if (kind_person != 'SPORTSMAN')
+    if (role_person != 'SPORTSMAN')
     then
         RAISE_APPLICATION_ERROR( -20001,
                                  'Person must be sportsman' );

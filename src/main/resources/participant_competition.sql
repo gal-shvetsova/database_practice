@@ -25,18 +25,18 @@ create or replace trigger tr_participant_competition
     on PARTICIPANT_COMPETITION
     for each row
 declare
-    kind_person varchar(100);
+    role_person varchar(100);
     competition_exist number;
 begin
-    select kind
-    into kind_person
+    select role
+    into role_person
     from PERSON where
             PERSON.ID = :new.ID_PARTICIPANT;
     select count(1)
     into competition_exist
     from COMPETITION where COMPETITION.ID = :new.ID_COMPETITION;
 
-    if (kind_person != 'SPORTSMAN' or competition_exist = 0)
+    if (role_person != 'SPORTSMAN' or competition_exist = 0)
     then
         RAISE_APPLICATION_ERROR( -20001,
                                  'Person should be sportsman, competition must exist' );

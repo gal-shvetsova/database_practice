@@ -1,22 +1,22 @@
-declare ps_count number;
+declare
+    person_count number;
 begin
     select count(1)
-    into ps_count
+    into person_count
     from dba_tables
     where owner = 'SHVETSOVA'
       and table_name = 'PERSON';
-    if (0 = ps_count)
+    if (0 = person_count)
     then
         execute immediate
-            'create table person
+            'create table PERSON
              (
-                 id      number        not null primary key,
-                 name    varchar2(100) not null,
-                 surname varchar2(100) not null,
-                 kind    varchar2(10)  not null,
-                 CONSTRAINT fk_kind
-                     FOREIGN KEY (kind)
-                         REFERENCES kind(name)
+                 id number not null primary key,
+                 role varchar2(10) not null,
+                 login varchar(100) unique not null,
+                 password varchar(100) not null,
+                 surname varchar(100) not null,
+                 name varchar(100) not null
              )';
     end if;
 end;
@@ -32,15 +32,16 @@ BEGIN
     if (0 = sq_person_cnt)
     then
         EXECUTE IMMEDIATE 'create sequence sq_for_person
-            start with 1
+            start
+        with 1
             increment by 1
-            nomaxvalue';
+            nomaxvalue ';
     end if;
 END;
 
 create or replace trigger tr_person
     before insert
-    on person
+    on PERSON
     for each row
 begin
     select sq_for_person.NEXTVAL

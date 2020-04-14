@@ -24,18 +24,13 @@ create or replace trigger tr_organizer_competition
     on ORGANIZER_COMPETITION
     for each row
 declare
-    kind_person varchar(100);
-    organizer_exist number;
+    role_person varchar(100);
 begin
-    select kind
-    into kind_person
+    select role
+    into role_person
     from PERSON where
             PERSON.ID = :new.ID_ORGANIZER;
-    select count(1)
-    into organizer_exist
-    from PERSON where PERSON.ID = :new.ID_COMPETITION;
-
-    if (kind_person != 'ORGANIZER' or organizer_exist = 0)
+    if (role_person != 'ORGANIZER')
     then
         RAISE_APPLICATION_ERROR( -20001,
                                  'Person should be organizer, competition must exist' );
