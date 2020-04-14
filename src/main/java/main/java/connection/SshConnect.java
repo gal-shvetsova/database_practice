@@ -16,7 +16,7 @@ public class SshConnect {
     private Session session = null;
 
     public void connect(){
-        if (session == null || session.isConnected()){
+        if (session != null){
             return;
         }
         try {
