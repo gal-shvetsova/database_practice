@@ -1,5 +1,6 @@
 package gui;
 
+import dao.ClubDao;
 import dao.Service;
 import model.Person;
 import model.Role;
@@ -10,7 +11,7 @@ public class Manager {
     private final static EnterPage ENTER_PAGE = new EnterPage();
     private final static SignInPage SIGN_IN_PAGE = new SignInPage();
     private static MainPage MAIN_PAGE;
-    private static final ClubPage CLUB_PAGE = new ClubPage();
+    private static ClubPage CLUB_PAGE;
 
     private static Person person;
 
@@ -59,8 +60,17 @@ public class Manager {
                     JOptionPane.ERROR_MESSAGE);
         } else {
             MAIN_PAGE = new MainPage();
+            CLUB_PAGE = new ClubPage();
             hideSignInPage();
             showMainPage();
         }
+    }
+
+    public static void createClub(String name) {
+        ClubDao.createClub(name);
+    }
+
+    public static void updateClub(String oldName, String newName){
+        ClubDao.updateClub(oldName, newName);
     }
 }
