@@ -18,7 +18,7 @@ public class JdbcConnection {
     private static final boolean useSSH = true;
     private static final SshConnect sshConnect = new SshConnect();
 
-    public static Connection getConnection()  {
+    private static Connection getConnection(boolean a)  {
         if (useSSH){  //todo: close it
             sshConnect.connect();
         }
@@ -37,5 +37,15 @@ public class JdbcConnection {
             }
             throw new RuntimeException(e);
         }
+    }
+
+    private static final Connection connection = getConnection(true);
+
+    public static Connection getConnection() {
+        return connection;
+    }
+
+    public static void close(){
+        sshConnect.close();
     }
 }
