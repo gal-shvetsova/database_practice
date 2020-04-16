@@ -23,7 +23,7 @@ public class CompetitionPage extends Page {
     private JButton editButton = new JButton("Edit");
     private JButton removeButton = new JButton("Remove");
     private JButton backButton = new JButton("Back");
-    private Object[] columnsHeader = new String[]{"Name", "Sport", "Facility", "Start date", "Finish date"};
+    private Object[] columnsHeader = new String[]{"Name", "Sport", "Facility", "Start date", "Finish date", "Organizer"};
     private List<Competition> competitionList;
 
     public CompetitionPage() {
@@ -54,7 +54,7 @@ public class CompetitionPage extends Page {
         model.setColumnIdentifiers(columnsHeader);
         competitionList = Service.getCompetitions();
         competitionList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getSport(), e.getFacility().getName(),
-                e.getStartDate(), e.getFinishDate()}));
+                e.getStartDate(), e.getFinishDate(), e.getOrganizer()}));
         competitionTable = new JTable(model);
         competitionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ListSelectionModel selectionModel = competitionTable.getSelectionModel();

@@ -9,14 +9,16 @@ public class Competition {
     private final Facility facility;
     private final Instant startDate;
     private final Instant finishDate;
+    private final Person organizer;
 
-    public Competition(Integer id, String name, Sport sport, Facility facility, Instant startDate, Instant finishDate) {
+    public Competition(Integer id, String name, Sport sport, Facility facility, Instant startDate, Instant finishDate, Person organizer) {
         this.id = id;
         this.name = name;
         this.sport = sport;
         this.facility = facility;
         this.startDate = startDate;
         this.finishDate = finishDate;
+        this.organizer = organizer;
     }
 
     public Integer getId() {
@@ -41,6 +43,10 @@ public class Competition {
 
     public Instant getFinishDate() {
         return finishDate;
+    }
+
+    public Person getOrganizer() {
+        return organizer;
     }
 
     @Override
