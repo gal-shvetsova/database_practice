@@ -1,6 +1,4 @@
-package dao;
-
-import main.java.connection.SshConnect;
+package connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

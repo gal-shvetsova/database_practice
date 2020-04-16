@@ -1,4 +1,4 @@
-package main.java.connection;
+package connection;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
