@@ -43,7 +43,7 @@ public class CompetitionPage extends Page {
         editButton.addActionListener(e -> new AddEditCompetitionPage(competitionList.get(competitionTable.getSelectedRow())));
 
         backButton.addActionListener(e -> {
-            Manager.hideClubPage();
+            Manager.hideCompetitionPage();
             Manager.showMainPage();
         });
         pack();
