@@ -13,19 +13,19 @@ public class ClubDao extends AbstractDao{
         return query(sql, ClubDao::clubRowMapper);
     }
 
+    public static void insert(Club club) {
+        String sql = "insert into club values (?)";
+        List<Object> params = Arrays.asList(new Object[]{club.getName()});
+        query(sql, params);
+    }
+
+    public static void update(Club oldClub, Club newClub) {
+        String sql = "update club set name = ? where name = ?";
+        List<Object> params = Arrays.asList(new Object[]{newClub.getName(), oldClub.getName()});
+        query(sql, params);
+    }
+
     private static Club clubRowMapper(ResultSet rs, int rowNum) throws SQLException {
         return new Club(rs.getString("name"));
-    }
-
-    public static void createClub(String name) {
-        String sql = "insert into club values (?)";
-        List<Object> params = Arrays.asList(new Object[]{name});
-        query(sql, params);
-    }
-
-    public static void updateClub(String oldName, String newName) {
-        String sql = "update club set name = ? where name = ?";
-        List<Object> params = Arrays.asList(new Object[]{newName, oldName});
-        query(sql, params);
     }
 }

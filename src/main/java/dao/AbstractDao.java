@@ -1,15 +1,12 @@
 package dao;
 
-import model.Person;
-import org.apache.ibatis.jdbc.ScriptRunner;
+import connection.JdbcConnection;
 
-import java.io.*;
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 abstract public class AbstractDao {
     private static final Connection connection = JdbcConnection.getConnection();
@@ -20,7 +17,7 @@ abstract public class AbstractDao {
             PreparedStatement preStatement = conn.prepareStatement(sql);
             ResultSet resultSet = prepareStatement(preStatement, params).executeQuery();
             int row = 0;
-            List<E> result = new ArrayList<E>();
+            List<E> result = new ArrayList<>();
             while (resultSet.next()) {
                 result.add(rowMapper.mapRow(resultSet, row));
                 row++;
