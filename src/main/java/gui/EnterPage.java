@@ -4,13 +4,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class EnterPage extends Page {
-    private final JButton signInButton = new JButton("Sign in");
-    private final JButton registerButton = new JButton("Register");
 
     public EnterPage() {
         super("Main page");
         Container container = getContentPane();
+        JButton signInButton = new JButton("Sign in");
         container.add(signInButton);
+        JButton registerButton = new JButton("Register");
         container.add(registerButton);
         pack();
 
@@ -20,7 +20,8 @@ public class EnterPage extends Page {
         });
 
         registerButton.addActionListener(e -> {
-
+            Manager.showRegisterPage();
+            Manager.hideEnterPage();
         });
 
     }
