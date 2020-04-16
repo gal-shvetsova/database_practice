@@ -11,7 +11,7 @@ begin
         execute immediate
             'create table competition
              (
-                 id          number      not null primary key,
+                 id          varchar(100)      not null primary key,
                  sport       varchar(10) not null,
                  facility    varchar(10) not null,
                  start_date  date        not null,
@@ -24,31 +24,4 @@ begin
                          REFERENCES facility(NAME)
              )';
     end if;
-end;
-
-declare
-    sq_for_competition_cnt number;
-BEGIN
-    SELECT count(1)
-    into sq_for_competition_cnt
-    FROM user_sequences
-
-    where sequence_name = 'SQ_FOR_COMPETITION';
-    if (0 = sq_for_competition_cnt)
-    then
-        EXECUTE IMMEDIATE 'create sequence SQ_FOR_COMPETITION
-            start with 1
-            increment by 1
-            nomaxvalue';
-    end if;
-END;
-
-create or replace trigger tr_competition
-    before insert
-    on competition
-    for each row
-begin
-    select sq_for_competition.NEXTVAL
-    into :new.id
-    from dual;
 end;

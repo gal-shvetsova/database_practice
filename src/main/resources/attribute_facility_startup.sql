@@ -11,7 +11,7 @@ begin
         execute immediate
             'create table ATTRIBUTE_FACILITY
              (
-                 id_attribute number not null,
+                 id_attribute varchar(100) not null,
                  id_facility varchar(100) not null,
                  value number not null,
                  constraint ATTRIBUTE_FACILITY_PK primary key (id_attribute, id_facility),

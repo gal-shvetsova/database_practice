@@ -10,7 +10,7 @@ begin
         execute immediate
             'create table ATTRIBUTE_FACILITY_KIND
              (
-                 id number not null primary key ,
+                 id varchar(100) not null primary key ,
                  id_type varchar(100) not null,
                  name varchar2(100) not null,
                  CONSTRAINT fk_facility FOREIGN KEY (id_type) references FACILITY_KIND(name)
