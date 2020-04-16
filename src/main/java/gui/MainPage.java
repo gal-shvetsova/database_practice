@@ -8,7 +8,6 @@ import java.awt.*;
 public class MainPage extends Page {
     private final JButton clubButton = new JButton("Club");
     private final JButton sportsmanButton = new JButton("Sportsman");
-    private final JButton trainerButton = new JButton("Trainer");
     private final JButton sportButton = new JButton("Sport");
     private final JButton organizerButton = new JButton("Organizer");
     private final JButton competitionButton = new JButton("Competition");
@@ -23,6 +22,7 @@ public class MainPage extends Page {
     public MainPage() {
         super("Main");
         Container container = getContentPane();
+        container.setLayout(new GridLayout(4,3));
         Role role = Manager.getRole();
         switch (role) {
             case ADMIN:
@@ -34,7 +34,6 @@ public class MainPage extends Page {
             case TRAINER:
             case SPORTSMAN:
                 container.add(clubButton);
-                container.add(trainerButton);
                 container.add(sportButton);
                 container.add(facilityButton);
                 setListenersForSportsman();
