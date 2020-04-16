@@ -1,17 +1,32 @@
 package model;
 
-public class Sportsman {
-    private final Integer id;
-    private String name;
-    private String surname;
-    private String patronymic;
+public class Sportsman extends Person {
+    private final Club club;
+    private final Sport sport;
+    private final Integer category;
+    private final Person trainer;
 
-    public Sportsman(Integer id, String name, String surname, String patronymic) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
+    public Sportsman(Person person, Club club, Sport sport, Integer category, Person trainer) {
+        super(person);
+        this.club = club;
+        this.sport = sport;
+        this.category = category;
+        this.trainer = trainer;
     }
 
+    public Club getClub() {
+        return club;
+    }
 
+    public Sport getSport() {
+        return sport;
+    }
+
+    public Person getTrainer() {
+        return trainer;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
 }

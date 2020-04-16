@@ -1,7 +1,7 @@
 package model;
 
 public enum Role implements HasId<String> {
-    ADMIN("ADMIN"),
+    ADMIN("ADMIN"),  //todo: add constraint for it
     SPORTSMAN("SPORTSMAN"),
     TRAINER("TRAINER"),
     ORGANIZER("ORGANIZER");

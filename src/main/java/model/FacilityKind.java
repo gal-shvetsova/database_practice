@@ -1,9 +1,9 @@
 package model;
 
-public class Club {
+public class FacilityKind {
     private final String name;
 
-    public Club(String name) {
+    public FacilityKind(String name) {
         this.name = name;
     }
 

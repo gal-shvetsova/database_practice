@@ -1,9 +1,9 @@
 package model;
 
-public class Club {
+public class Sport {
     private final String name;
 
-    public Club(String name) {
+    public Sport(String name) {
         this.name = name;
     }
 
