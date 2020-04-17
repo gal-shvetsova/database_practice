@@ -4,19 +4,19 @@ import model.Role;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MainPage extends Page {
     private final JButton clubButton = new JButton("Club");
     private final JButton sportsmanButton = new JButton("Sportsman");
     private final JButton sportButton = new JButton("Sport");
-    private final JButton organizerButton = new JButton("Organizer");
     private final JButton competitionButton = new JButton("Competition");
     private final JButton competitionSportsmanButton = new JButton("Competition Sportsman");
-    private final JButton attributeButton = new JButton("Attributes");
     private final JButton attributeFacilityButton = new JButton("Attribute facility");
+    private final JButton attributeFacilityKindsButton = new JButton("Attribute facility kind");
     private final JButton facilityButton = new JButton("Facility");
     private final JButton facilityKindButton = new JButton("Facility type");
-    private final JButton organizerCompetition = new JButton("Organizer competition");
     private final JButton personButton = new JButton("Person");
 
     public MainPage() {
@@ -26,9 +26,9 @@ public class MainPage extends Page {
         Role role = Manager.getRole();
         switch (role) {
             case ADMIN:
-                container.add(attributeButton);
-                container.add(facilityKindButton);
                 container.add(attributeFacilityButton);
+                container.add(facilityKindButton);
+                container.add(attributeFacilityKindsButton);
                 container.add(personButton);
                 setListenersForAdmin();
             case TRAINER:
@@ -40,9 +40,7 @@ public class MainPage extends Page {
             case ORGANIZER:
                 container.add(competitionButton);
                 container.add(competitionSportsmanButton);
-                container.add(organizerButton);
                 container.add(sportsmanButton);
-                container.add(organizerCompetition);
                 setListenersForOrganizer();
         }
     }
@@ -56,6 +54,14 @@ public class MainPage extends Page {
         personButton.addActionListener(e -> {
             Manager.hideMainPage();
             Manager.showPersonPage();
+        });
+
+        attributeFacilityKindsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Manager.hideMainPage();
+                Manager.showAttributeFacilityKindPage();
+            }
         });
     }
 

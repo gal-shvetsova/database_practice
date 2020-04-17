@@ -24,9 +24,10 @@ public class Manager {
     private static final RegisterOthersPage REGISTER_OTHERS_PAGE = new RegisterOthersPage();
 
     private static Person person;
+    private static AttributeFacilityKindPage attributeFacilityKindPage;
 
     public static Role getRole(){
-        return person.getRole();
+        return Role.SPORTSMAN;
     }
 
     public static void showEnterPage(){
@@ -46,6 +47,7 @@ public class Manager {
     }
 
     public static void showMainPage(){
+        mainPage = new MainPage();
         mainPage.setVisible(true);
     }
 
@@ -66,10 +68,10 @@ public class Manager {
     public static void signIn(String login, String password) {
         person = Service.signIn(login, password);
         if (person == null){
-            JOptionPane.showMessageDialog(SIGN_IN_PAGE,
-                    "Error",
-                    "Incorrect login/password",
-                    JOptionPane.ERROR_MESSAGE);
+          //  JOptionPane.showMessageDialog(SIGN_IN_PAGE,
+              //      "Error",
+               //     "Incorrect login/password",
+                //    JOptionPane.ERROR_MESSAGE);
         } else {
             mainPage = new MainPage();
             clubPage = new ClubPage();
@@ -169,4 +171,13 @@ public class Manager {
         REGISTER_OTHERS_PAGE.setVisible(false);
     }
 
+    public static void showAttributeFacilityKindPage() {
+        attributeFacilityKindPage = new AttributeFacilityKindPage();
+        attributeFacilityKindPage.setVisible(true);
+    }
+
+    public static void hideAttributeFacilityKindPage() {
+        attributeFacilityKindPage.setVisible(false);
+        attributeFacilityKindPage.dispose();
+    }
 }

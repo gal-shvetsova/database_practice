@@ -10,17 +10,22 @@ public class AbstractRegisterPage extends Page {
     protected JTextField surnameText = new JTextField();
     protected JButton okButton = new JButton("Ok");
     protected JButton cancelButton = new JButton("Cancel");
+    protected JLabel loginLabel= new JLabel("Login");
+    protected JLabel passwordLabel = new JLabel("Password");
+    protected JLabel nameLabel = new JLabel("Name");
+    protected JLabel surnameLabel = new JLabel("Surname");
+
 
     public AbstractRegisterPage(String name) {
         super(name);
         Container container = getContentPane();
-        login.setText("               ");
-        password.setText("               ");
-        nameText.setText("                ");
-        surnameText.setText("             ");
+        container.add(loginLabel);
         container.add(login);
+        container.add(passwordLabel);
         container.add(password);
+        container.add(nameLabel);
         container.add(nameText);
+        container.add(surnameLabel);
         container.add(surnameText);
     }
 
@@ -28,10 +33,10 @@ public class AbstractRegisterPage extends Page {
     public void setVisible(boolean b) {
         super.setVisible(b);
         if (b){
-            login.setText("               ");
-            password.setText("               ");
-            nameText.setText("                ");
-            surnameText.setText("             ");
+            login.setText("");
+            password.setText("");
+            nameText.setText("");
+            surnameText.setText("");
         }
     }
 }

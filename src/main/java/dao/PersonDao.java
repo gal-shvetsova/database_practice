@@ -26,11 +26,12 @@ public class PersonDao extends AbstractDao {
         return query(sql, PersonDao::personRowMapper);
     }
 
-    public static List<Person> getAllTrainers() {
+    public static List<Person> getAllByRole(Role role){
         String sql = "select * from person where role = ?";
-        List<Object> params = Collections.singletonList("TRAINER");
+        List<Object> params = Collections.singletonList(role.toString());
         return query(sql, params, PersonDao::personRowMapper);
     }
+
 
     public static Person getByLoginAndPassword(String login, String password) {
         String sql = "select * from person where login = ? and password = ?";

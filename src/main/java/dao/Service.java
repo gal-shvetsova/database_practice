@@ -69,12 +69,20 @@ public class Service {
         FacilityDao.update(oldFacility, newFacility);
     }
 
+    private static List<Person> getAllPersonsByRole(Role role){
+        return PersonDao.getAllByRole(role);
+    }
+
     public static List<Sportsman> getAllSportsmen() {
         return SportsmanDao.getAll();
     }
 
     public static List<Person> getAllTrainers() {
-        return PersonDao.getAllTrainers();
+        return getAllPersonsByRole(Role.TRAINER);
+    }
+
+    public static List<Person> getAllOrganizers(){
+        return getAllPersonsByRole(Role.ORGANIZER);
     }
 
     public static void updateSportsman(Sportsman oldSportsman, Sportsman newSportsman) {
@@ -95,5 +103,17 @@ public class Service {
 
     public static void registerPerson(Person person) {
         PersonDao.registerPerson(person);
+    }
+
+    public static List<AttributeFacilityKind> getAllAttributeFacilityKinds(){
+        return AttributeFacilityKindDao.getAll();
+    }
+
+    public static void updateAttributeFacilityKind(AttributeFacilityKind oldEntity, AttributeFacilityKind newEntity) {
+        AttributeFacilityKindDao.update(oldEntity, newEntity);
+    }
+
+    public static void createAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind){
+        AttributeFacilityKindDao.create(attributeFacilityKind);
     }
 }
