@@ -2,6 +2,7 @@ package gui;
 
 import model.FacilityKind;
 import model.Role;
+import model.SportsmanCharacteristic;
 import sun.security.krb5.internal.PAData;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class MainPage extends Page {
     private final JButton facilityButton = new JButton("Facility");
     private final JButton facilityKindButton = new JButton("Facility type");
     private final JButton personButton = new JButton("Person");
+    private final JButton sportsmanCharacteristic = new JButton("Sportsman characteristic");
 
     public static MainPage getInstance(){
         if (instance == null){
@@ -50,6 +52,7 @@ public class MainPage extends Page {
                 container.add(clubButton);
                 container.add(sportButton);
                 container.add(facilityButton);
+                container.add(sportsmanCharacteristic);
                 setListenersForSportsman();
             case ORGANIZER:
                 container.add(competitionButton);
@@ -90,6 +93,11 @@ public class MainPage extends Page {
         facilityButton.addActionListener(e -> {
             PageManager.hideUpperPage();
             new PageManager(FacilityPage.getInstance());
+        });
+
+        sportsmanCharacteristic.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(new SportsmanCharacteristicPage()).showPage();
         });
     }
 

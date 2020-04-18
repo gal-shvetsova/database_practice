@@ -44,7 +44,6 @@ public class AddEditPersonPage extends AddEditPage<Person> {
             dispose();
         });
 
-        pack();
         this.setVisible(true);
     }
 }

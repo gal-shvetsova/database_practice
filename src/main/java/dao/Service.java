@@ -140,4 +140,20 @@ public class Service {
     public static boolean deleteSport(Sport sport) {
         return SportDao.delete(sport);
     }
+
+    public static List<SportsmanCharacteristic> getSportCharacteristic() {
+        return SportsmanCharacteristicDao.getAll();
+    }
+
+    public static boolean deleteSportCharacteristic(SportsmanCharacteristic sportsmanCharacteristic) {
+        return SportsmanCharacteristicDao.delete(sportsmanCharacteristic);
+    }
+
+    public static void createSportsmanCharacteristic(SportsmanCharacteristic sportsmanCharacteristic) {
+        SportsmanCharacteristicDao.create(sportsmanCharacteristic);
+    }
+
+    public static void updateSportsmanCharacteristic(SportsmanCharacteristic oldEntity, SportsmanCharacteristic entity) {
+        SportsmanCharacteristicDao.update(oldEntity, entity);
+    }
 }
