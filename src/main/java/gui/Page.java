@@ -10,12 +10,11 @@ public abstract class Page extends JFrame {
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
     protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
 
-    public Page(String name) {
+    protected Page(String name) {
         super(name);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      //  setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
         Container container = getContentPane();
-        container.setLayout (new FlowLayout(FlowLayout.CENTER));
+        container.setLayout(new GridLayout(0,1));
     }
 
 }

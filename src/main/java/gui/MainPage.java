@@ -1,13 +1,19 @@
 package gui;
 
+import model.FacilityKind;
 import model.Role;
+import sun.security.krb5.internal.PAData;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainPage extends Page {
+    private static MainPage instance;
+
+    protected final static int SIZE_WIDTH = 400;
+    protected final static int SIZE_HEIGHT =300;
+    protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
+    protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
     private final JButton clubButton = new JButton("Club");
     private final JButton sportsmanButton = new JButton("Sportsman");
     private final JButton sportButton = new JButton("Sport");
@@ -19,11 +25,19 @@ public class MainPage extends Page {
     private final JButton facilityKindButton = new JButton("Facility type");
     private final JButton personButton = new JButton("Person");
 
-    public MainPage() {
+    public static MainPage getInstance(){
+        if (instance == null){
+            instance = new MainPage();
+        }
+        return instance;
+    }
+
+    private MainPage() {
         super("Main");
         Container container = getContentPane();
         container.setLayout(new GridLayout(4,3));
-        Role role = Manager.getRole();
+        setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
+        Role role = PageManager.getRole();
         switch (role) {
             case ADMIN:
                 container.add(attributeFacilityButton);
@@ -47,50 +61,47 @@ public class MainPage extends Page {
 
     private void setListenersForAdmin(){
         facilityKindButton.addActionListener(e -> {
-            Manager.hideMainPage();
-            Manager.showFacilityKindPage();
+            PageManager.hideUpperPage();
+            new PageManager(FacilityKindPage.getInstance()).showPage();
         });
 
         personButton.addActionListener(e -> {
-            Manager.hideMainPage();
-            Manager.showPersonPage();
+            PageManager.hideUpperPage();
+            new PageManager(PersonPage.getInstance()).showPage();
         });
 
-        attributeFacilityKindsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Manager.hideMainPage();
-                Manager.showAttributeFacilityKindPage();
-            }
+        attributeFacilityKindsButton.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(AttributeFacilityKindPage.getInstance()).showPage();
         });
     }
 
     private void setListenersForSportsman(){
         clubButton.addActionListener(e -> {
-            Manager.hideMainPage();
-            Manager.showClubPage();
+            PageManager.hideUpperPage();
+            new PageManager(ClubPage.getInstance()).showPage();
         });
 
         sportButton.addActionListener(e -> {
-            Manager.hideMainPage();
-            Manager.showSportPage();
+            PageManager.hideUpperPage();
+            new PageManager(SportPage.getInstance()).showPage();
         });
 
         facilityButton.addActionListener(e -> {
-            Manager.hideMainPage();
-            Manager.showFacilityPage();
+            PageManager.hideUpperPage();
+            new PageManager(FacilityPage.getInstance());
         });
     }
 
     private void setListenersForOrganizer(){
         competitionButton.addActionListener(e -> {
-            Manager.hideMainPage();
-            Manager.showCompetitionPage();
+            PageManager.hideUpperPage();
+            new PageManager(CompetitionPage.getInstance());
         });
 
         sportsmanButton.addActionListener(e -> {
-            Manager.hideMainPage();
-            Manager.showSportsmanPage();
+            PageManager.hideUpperPage();
+            new PageManager(new SportsmanPage());
         });
 
     }

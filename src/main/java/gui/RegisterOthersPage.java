@@ -8,12 +8,21 @@ import java.awt.*;
 import java.util.UUID;
 
 public class RegisterOthersPage extends AbstractRegisterPage {
+    private static RegisterOthersPage instance;
+
     protected final static int SIZE_WIDTH = 250;
     protected final static int SIZE_HEIGHT = 300;
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
     protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
 
-    public RegisterOthersPage() {
+    public static RegisterOthersPage getInstance(){
+        if (instance == null){
+            instance = new RegisterOthersPage();
+        }
+        return instance;
+    }
+
+    private RegisterOthersPage() {
         super("Register trainer/organizer");
 
         JComboBox<Role> roleComboBox = new JComboBox<>();
@@ -36,17 +45,22 @@ public class RegisterOthersPage extends AbstractRegisterPage {
                     surnameText.getText(),
                     nameText.getText());
             Service.registerPerson(person);
-            Manager.signIn(person.getLogin(), person.getPassword());
+            if (PageManager.signIn(person.getLogin(), person.getPassword())){
+                PageManager.hideUpperPage();
+                (new PageManager(MainPage.getInstance())).showPage();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Signing in error", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
 
         cancelButton.addActionListener(e -> {
-            Manager.hideRegisterOthers();
-            Manager.showEnterPage();
+            PageManager.hideUpperPage();
+            (new PageManager(RegisterPage.getInstance())).showPage();
         });
 
         container.add(okButton);
         container.add(cancelButton);
-      //  pack();
     }
 }

@@ -8,13 +8,22 @@ import java.awt.*;
 import java.util.UUID;
 
 public class RegisterSportsmanPage extends AbstractRegisterPage {
+    private static RegisterSportsmanPage instance;
+
     protected final static int SIZE_WIDTH = 300;
     protected final static int SIZE_HEIGHT =500;
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
     protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
 
 
-    public RegisterSportsmanPage() {
+    public static RegisterSportsmanPage getInstance(){
+        if (instance == null){
+            instance = new RegisterSportsmanPage();
+        }
+        return instance;
+    }
+
+    private RegisterSportsmanPage() {
         super("Register sportsman");
         JComboBox<Sport> sportComboBox = new JComboBox<>();
         JComboBox<Club> clubComboBox = new JComboBox<>();
@@ -26,7 +35,7 @@ public class RegisterSportsmanPage extends AbstractRegisterPage {
         JLabel categoryLabel = new JLabel("Category");
 
         Container container = getContentPane();
-        container.setLayout(new GridLayout(0,1));
+
 
         setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
 
@@ -55,13 +64,19 @@ public class RegisterSportsmanPage extends AbstractRegisterPage {
                     Integer.parseInt(category.getText()),
                     (Person) trainerComboBox.getSelectedItem());
             Service.registerSportsman(sportsman);
-            Manager.signIn(sportsman.getLogin(), sportsman.getPassword());
+            if (PageManager.signIn(sportsman.getLogin(), sportsman.getPassword())){
+                PageManager.hideUpperPage();
+                (new PageManager(MainPage.getInstance())).showPage();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Signing in error", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
 
         cancelButton.addActionListener(e -> {
-            Manager.hideRegisterSportsman();
-            Manager.showEnterPage();
+            PageManager.hideUpperPage();
+            (new PageManager(RegisterPage.getInstance())).showPage();
         });
 
     }

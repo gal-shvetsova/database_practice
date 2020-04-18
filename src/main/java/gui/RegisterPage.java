@@ -4,12 +4,21 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RegisterPage extends Page {
+    private static RegisterPage instance;
+
     protected final static int SIZE_WIDTH = 200;
     protected final static int SIZE_HEIGHT =100;
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
     protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
 
-    public RegisterPage() {
+    public static RegisterPage getInstance(){
+        if (instance == null){
+            instance = new RegisterPage();
+        }
+        return instance;
+    }
+
+    private RegisterPage() {
         super("Register");
         JButton backButton = new JButton("Back");
         JButton sportsmanButton = new JButton("Register as sportsman");
@@ -20,18 +29,18 @@ public class RegisterPage extends Page {
         container.add(organizerTrainerButton);
         setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
         sportsmanButton.addActionListener(e -> {
-            Manager.hideRegisterPage();
-            Manager.showRegisterSportsman();
+            PageManager.hideUpperPage();
+            (new PageManager(RegisterSportsmanPage.getInstance())).showPage();
         });
 
         organizerTrainerButton.addActionListener(e -> {
-            Manager.hideRegisterPage();
-            Manager.showRegisterOthers();
+            PageManager.hideUpperPage();
+            (new PageManager(RegisterOthersPage.getInstance())).showPage();
         });
 
         backButton.addActionListener(e -> {
-            Manager.hideRegisterPage();
-            Manager.showEnterPage();
+            PageManager.hideUpperPage();
+            (new PageManager(EnterPage.getInstance())).showPage();
         });
     }
 }

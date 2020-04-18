@@ -11,36 +11,50 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-public class AttributeFacilityKindPage extends Page {
-    private Object[] columnHeader = new String[]{"Name", "Facility kind"};
-    private JButton editButton = new JButton("Edit");
-    private JTable attrTable;
+public class AttributeFacilityKindPage extends AbstractPageWithTable {
+    private static AttributeFacilityKindPage instance;
+
+    private final Object[] columnHeader = new String[]{"Name", "Facility kind"};
+    private final JTable attrTable = new JTable();
     private List<AttributeFacilityKind> attributeFacilityKindList;
 
-    public AttributeFacilityKindPage() {
-        super("Attribute facility kind");
-        JButton addButton = new JButton("Add");
-        JButton removeButton = new JButton("Remove");
-        JButton backButton = new JButton("Back");
-        editButton.setEnabled(false);
-        Container container = getContentPane();
-
-        if (Manager.getRole().equals(Role.ADMIN)) {
-            container.add(addButton);
-            container.add(editButton);
-            container.add(removeButton);
+    public static AttributeFacilityKindPage getInstance(){
+        if (instance == null){
+            instance = new AttributeFacilityKindPage();
         }
-        container.add(backButton);
+        return instance;
+    }
 
-        addButton.addActionListener(e -> new AddEditCompetitionPage(null));
-        editButton.addActionListener(e ->
-                new AddEditAttributeFacilityKind(attributeFacilityKindList.get(attrTable.getSelectedRow())));
+    private AttributeFacilityKindPage() {
+        super("Attribute facility kind");
+
+        final Container container = getContentPane();
+        final JPanel buttonPanel = new JPanel();
+        final JButton backButton = new JButton("Back");
+        container.add(new JScrollPane(attrTable), BorderLayout.NORTH);
+
+        if (PageManager.getRole().equals(Role.ADMIN)) {
+            final JButton addButton = new JButton("Add");
+            final JButton removeButton = new JButton("Remove");
+
+            editButton.setEnabled(false);
+            buttonPanel.add(addButton);
+            buttonPanel.add(editButton);
+            buttonPanel.add(removeButton);
+
+            addButton.addActionListener(e -> new AddEditCompetitionPage(null));
+            editButton.addActionListener(e ->
+                    new AddEditAttributeFacilityKind(attributeFacilityKindList.get(attrTable.getSelectedRow())));
+
+        }
+
+        buttonPanel.add(backButton);
+        container.add(buttonPanel, BorderLayout.SOUTH);
 
         backButton.addActionListener(e -> {
-            Manager.hideAttributeFacilityKindPage();
-            Manager.showMainPage();
+            PageManager.hideUpperPage();
+            (new PageManager(MainPage.getInstance())).showPage();
         });
-        pack();
 
     }
 
@@ -49,7 +63,7 @@ public class AttributeFacilityKindPage extends Page {
         model.setColumnIdentifiers(columnHeader);
         attributeFacilityKindList = Service.getAllAttributeFacilityKinds();
         attributeFacilityKindList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getFacilityKind()}));
-        attrTable = new JTable(model);
+        attrTable.setModel(model);
         attrTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ListSelectionModel selectionModel = attrTable.getSelectionModel();
         selectionModel.addListSelectionListener(e -> editButton.setEnabled(true));

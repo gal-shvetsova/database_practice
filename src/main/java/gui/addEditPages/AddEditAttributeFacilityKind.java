@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AddEditAttributeFacilityKind extends AddEditPage<AttributeFacilityKind> {
+    private static AttributeFacilityKind instance;
+
     public AddEditAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind) {
         super("Add/Edit attribute facility kind", attributeFacilityKind);
         Container container = getContentPane();

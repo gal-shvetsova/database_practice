@@ -1,64 +1,69 @@
 package gui;
 
 import dao.Service;
-import gui.addEditPages.AddEditClubPage;
 import gui.addEditPages.AddEditCompetitionPage;
-import model.Club;
 import model.Competition;
 import model.Role;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.time.Instant;
 import java.util.List;
-import java.util.Vector;
 
-public class CompetitionPage extends Page {
-    private JTable competitionTable = new JTable();
-    private JButton addButton = new JButton("Add");
-    private JButton editButton = new JButton("Edit");
-    private JButton removeButton = new JButton("Remove");
-    private JButton backButton = new JButton("Back");
-    private Object[] columnsHeader = new String[]{"Name", "Sport", "Facility", "Start date", "Finish date", "Organizer"};
+public class CompetitionPage extends AbstractPageWithTable {
+    private static CompetitionPage instance;
+
+    private final JTable competitionTable = new JTable();
+    private final Object[] columnsHeader = new String[]{"Name", "Sport",
+            "Facility", "Start date", "Finish date", "Organizer"};
     private List<Competition> competitionList;
 
-    public CompetitionPage() {
-        super("Competition");
-        updateTable();
-        Container container = getContentPane();
-        container.add(competitionTable);
-        editButton.setEnabled(false);
-        if (Manager.getRole().equals(Role.ADMIN)) {
-            container.add(addButton);
-            container.add(editButton);
-            container.add(removeButton);
+    public static CompetitionPage getInstance(){
+        if (instance == null){
+            instance = new CompetitionPage();
         }
-        container.add(backButton);
-
-        addButton.addActionListener(e -> new AddEditCompetitionPage(null));
-        editButton.addActionListener(e -> new AddEditCompetitionPage(competitionList.get(competitionTable.getSelectedRow())));
-
-        backButton.addActionListener(e -> {
-            Manager.hideCompetitionPage();
-            Manager.showMainPage();
-        });
-        pack();
+        return instance;
     }
 
-    public void updateTable() {
+    private CompetitionPage() {
+        super("Competition");
+        final JButton backButton = new JButton("Back");
+        final JPanel buttonPanel = new JPanel();
+
+        updateTable();
+        Container container = getContentPane();
+        container.add(new JScrollPane(competitionTable), BorderLayout.NORTH);
+
+        if (PageManager.getRole().equals(Role.ADMIN)) {
+            final JButton addButton = new JButton("Add");
+            final JButton removeButton = new JButton("Remove");
+            buttonPanel.add(addButton);
+            buttonPanel.add(editButton);
+            buttonPanel.add(removeButton);
+            addButton.addActionListener(e -> new AddEditCompetitionPage(null));
+            editButton.setEnabled(false);
+            editButton.addActionListener(e ->
+                    new AddEditCompetitionPage(competitionList.get(competitionTable.getSelectedRow())));
+        }
+
+        buttonPanel.add(backButton);
+        container.add(buttonPanel, BorderLayout.SOUTH);
+        backButton.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            (new PageManager(MainPage.getInstance())).showPage();
+        });
+    }
+
+    @Override
+    protected void updateTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnsHeader);
         competitionList = Service.getCompetitions();
         competitionList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getSport(), e.getFacility().getName(),
                 e.getStartDate(), e.getFinishDate(), e.getOrganizer()}));
-        competitionTable = new JTable(model);
+        competitionTable.setModel(model);
         competitionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ListSelectionModel selectionModel = competitionTable.getSelectionModel();
         selectionModel.addListSelectionListener(e -> editButton.setEnabled(true));
     }
-
 }

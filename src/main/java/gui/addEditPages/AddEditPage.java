@@ -1,12 +1,13 @@
 package gui.addEditPages;
 
 import dao.Service;
+import gui.Page;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public abstract class AddEditPage<T> extends JFrame{
+public abstract class AddEditPage<T> extends Page {
 
     protected JButton okButton = new JButton("Ok");
     protected JButton cancelButton = new JButton("Cancel");

@@ -4,53 +4,65 @@ import dao.Service;
 import gui.addEditPages.AddEditClubPage;
 import model.Club;
 import model.Role;
-import model.Sport;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ClubPage extends Page {
-    private JList<Club> clubList = new JList<>(Service.getAllClubs().toArray(new Club[0]));
-    private JButton addButton = new JButton("Add");
-    private JButton editButton = new JButton("Edit");
-    private JButton removeButton = new JButton("Remove");
-    private JButton backButton = new JButton("Back");
-    public ClubPage() {
-        super("Club");
-        updateList();
-        clubList.addListSelectionListener(e -> editButton.setEnabled(true));
+public class ClubPage extends AbstractPageWithList {
+    private final JList<Club> clubList = new JList<>(Service.getAllClubs().toArray(new Club[0]));
 
-        Container container = getContentPane();
-        container.add(clubList);
-        editButton.setEnabled(false);
-        if (Manager.getRole().equals(Role.ADMIN)) {
-            container.add(addButton);
-            container.add(editButton);
-            container.add(removeButton);
+    private static ClubPage instance;
+
+    public static ClubPage getInstance() {
+        if (instance == null) {
+            instance = new ClubPage();
         }
-        container.add(backButton);
+        return instance;
 
-        addButton.addActionListener(e -> new AddEditClubPage(null));
-        editButton.addActionListener(e -> new AddEditClubPage(clubList.getSelectedValue()));
-
-        backButton.addActionListener(e -> {
-            Manager.hideClubPage();
-            Manager.showMainPage();
-        });
-        pack();
     }
 
-    public void updateList(){
+    private ClubPage() {
+        super("Club");
+        updateList();
+
+        final Container container = getContentPane();
+        final JPanel buttonPanel = new JPanel();
+
+        container.add(clubList, BorderLayout.NORTH);
+        editButton.setEnabled(false);
+
+        if (PageManager.getRole().equals(Role.ADMIN)) {
+            final JButton addButton = new JButton("Add");
+            final JButton removeButton = new JButton("Remove");
+            buttonPanel.add(addButton);
+            buttonPanel.add(editButton);
+            buttonPanel.add(removeButton);
+            addButton.addActionListener(e -> new AddEditClubPage(null));
+            editButton.addActionListener(e -> new AddEditClubPage(clubList.getSelectedValue()));
+            clubList.addListSelectionListener(e -> editButton.setEnabled(true));
+        }
+
+        final JButton backButton = new JButton("Back");
+        buttonPanel.add(backButton);
+
+        container.add(buttonPanel, BorderLayout.SOUTH);
+        backButton.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            (new PageManager(MainPage.getInstance())).showPage();
+        });
+    }
+
+    @Override
+    public void updateList() {
         DefaultListModel<Club> model = new DefaultListModel<>();
         Service.getAllClubs().forEach(model::addElement);
-        clubList = new JList<>(model);
+        clubList.setModel(model);
         clubList.addListSelectionListener(e -> editButton.setEnabled(true));
     }
 
     @Override
     public void setVisible(boolean b) {
-        clubList.setListData(Service.getAllClubs().toArray(new Club[0]));
-        pack();
+        updateList();
         super.setVisible(b);
     }
 }
