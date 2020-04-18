@@ -16,6 +16,7 @@ public class FacilityPage extends AbstractPageWithTable {
     private JTable facilityTable = new JTable();
     private Object[] columnsHeader = new String[]{"Name", "Address", "Kind"};
     private List<Facility> facilityList;
+    private final JButton removeButton = new JButton("Remove");
 
     public static FacilityPage getInstance(){
         if (instance == null){
@@ -35,14 +36,20 @@ public class FacilityPage extends AbstractPageWithTable {
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
-            final JButton removeButton = new JButton("Remove");
+
             buttonPanel.add(addButton);
             buttonPanel.add(editButton);
             buttonPanel.add(removeButton);
             addButton.addActionListener(e -> new AddEditFacilityPage(null));
             editButton.addActionListener(e ->
                     new AddEditFacilityPage(facilityList.get(facilityTable.getSelectedRow())));
+            removeButton.addActionListener(e -> {
+                if (!Service.deleteFacility(facilityList.get(facilityTable.getSelectedRow()))){
+                    Utils.createErrorDialog(this, "Can not delete facility", "Error");
+                }
+            });
             editButton.setEnabled(false);
+            removeButton.setEnabled(false);
         }
 
         buttonPanel.add(backButton);
@@ -63,6 +70,9 @@ public class FacilityPage extends AbstractPageWithTable {
         facilityTable = new JTable(model);
         facilityTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ListSelectionModel selectionModel = facilityTable.getSelectionModel();
-        selectionModel.addListSelectionListener(e -> editButton.setEnabled(true));
+        selectionModel.addListSelectionListener(e -> {
+            editButton.setEnabled(true);
+            removeButton.setEnabled(true);
+        });
     }
 }

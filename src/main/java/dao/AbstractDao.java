@@ -28,6 +28,7 @@ abstract public class AbstractDao {
         }
     }
 
+
     protected static <E> List<E> query(String sql, RowMapper<E> rowMapper) {
         return query(sql, Collections.emptyList(), rowMapper);
     }
@@ -36,6 +37,20 @@ abstract public class AbstractDao {
          query(sql, Collections.emptyList());
     }
 
+    protected static int queryCount(String sql, List<Object> params) {
+        Connection conn = getConnection();
+        try {
+            PreparedStatement preStatement = conn.prepareStatement(sql);
+            ResultSet resultSet = prepareStatement(preStatement, params).executeQuery();
+            int result = -1;
+            while (resultSet.next()) {
+                result = entityCountRowMapper(resultSet, 0);
+            }
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     protected static void query(String sql, List<Object> params) {
         Connection conn = getConnection();
@@ -66,4 +81,7 @@ abstract public class AbstractDao {
         return AbstractDao.connection; //TODO: connection pool
     }
 
+    protected static int entityCountRowMapper(ResultSet rs, int rowNum) throws SQLException {
+         return rs.getInt("count");
+    }
 }

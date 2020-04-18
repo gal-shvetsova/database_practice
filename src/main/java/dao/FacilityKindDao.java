@@ -28,4 +28,17 @@ public class FacilityKindDao extends AbstractDao{
     private static FacilityKind facilityKindRowManager(ResultSet rs, int rowNum) throws SQLException {
         return new FacilityKind(rs.getString("name"));
     }
+
+    public static boolean delete(FacilityKind facilityKind) {
+        String sql = "select count(*) count from attribute_facility_kind where id_kind = ?";
+        List<Object> params = Collections.singletonList(facilityKind.getName());
+        String sql1 = "select count(*) from facility where kind = ?";
+        if (queryCount(sql, params) > 0 || queryCount(sql1, params) > 0){
+            return false;
+        } else {
+            String sql3 = "delete from facility_kind where name = ?";
+            query(sql3, params);
+            return true;
+        }
+    }
 }

@@ -16,7 +16,8 @@ public class SportPage extends Page {
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
     protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
     private JList<Sport> sportList;
-    private JButton editButton = new JButton("Edit");
+    private final JButton editButton = new JButton("Edit");
+    private final JButton removeButton = new JButton("Remove");
 
     public static SportPage getInstance(){
         if (instance == null){
@@ -34,13 +35,18 @@ public class SportPage extends Page {
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
-            final JButton removeButton = new JButton("Remove");
             container.add(addButton);
             container.add(editButton);
             container.add(removeButton);
             editButton.setEnabled(false);
+            removeButton.setEnabled(false);
             addButton.addActionListener(e -> new AddEditSportPage(null));
             editButton.addActionListener(e -> new AddEditSportPage(sportList.getSelectedValue()));
+            removeButton.addActionListener(e -> {
+                if (!Service.deleteSport(sportList.getSelectedValue())){
+                    Utils.createErrorDialog(this, "Can not delete sport", "Error");
+                }
+            });
         }
 
         final JButton backButton = new JButton("Back");

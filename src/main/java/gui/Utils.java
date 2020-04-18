@@ -10,4 +10,11 @@ public class Utils {
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
     }
+
+    public static void createErrorDialog(JFrame frame, String message, String tittle) {
+        JOptionPane.showMessageDialog(frame,
+                message,
+                tittle,
+                JOptionPane.ERROR_MESSAGE);
+    }
 }

@@ -16,10 +16,11 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
 
     private final Object[] columnHeader = new String[]{"Name", "Facility kind"};
     private final JTable attrTable = new JTable();
+    private final JButton removeButton = new JButton("Remove");
     private List<AttributeFacilityKind> attributeFacilityKindList;
 
-    public static AttributeFacilityKindPage getInstance(){
-        if (instance == null){
+    public static AttributeFacilityKindPage getInstance() {
+        if (instance == null) {
             instance = new AttributeFacilityKindPage();
         }
         return instance;
@@ -30,13 +31,14 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
 
         final Container container = getContentPane();
         final JPanel buttonPanel = new JPanel();
+
         final JButton backButton = new JButton("Back");
         container.add(new JScrollPane(attrTable), BorderLayout.NORTH);
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
-            final JButton removeButton = new JButton("Remove");
 
+            removeButton.setEnabled(false);
             editButton.setEnabled(false);
             buttonPanel.add(addButton);
             buttonPanel.add(editButton);
@@ -46,6 +48,13 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
             editButton.addActionListener(e ->
                     new AddEditAttributeFacilityKind(attributeFacilityKindList.get(attrTable.getSelectedRow())));
 
+            removeButton.addActionListener(e -> {
+                if (!Service.deleteAttributeFacilityKind(attributeFacilityKindList.get(attrTable.getSelectedRow()))) {
+                    Utils.createErrorDialog(this,
+                            "Can not delete this attribute facility kind",
+                            "Error");
+                }
+            });
         }
 
         buttonPanel.add(backButton);
@@ -66,6 +75,9 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
         attrTable.setModel(model);
         attrTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ListSelectionModel selectionModel = attrTable.getSelectionModel();
-        selectionModel.addListSelectionListener(e -> editButton.setEnabled(true));
+        selectionModel.addListSelectionListener(e -> {
+            editButton.setEnabled(true);
+            removeButton.setEnabled(true);
+        });
     }
 }

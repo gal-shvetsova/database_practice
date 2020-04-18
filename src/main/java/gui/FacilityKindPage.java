@@ -14,9 +14,10 @@ public class FacilityKindPage extends AbstractPageWithList {
     private final JList<FacilityKind> facilityKindList =
             new JList<>(Service.getAllFacilityKinds().toArray(new FacilityKind[0]));
     private final JButton editButton = new JButton("Edit");
+    private final JButton removeButton = new JButton("Remove");
 
-    public static FacilityKindPage getInstance(){
-        if (instance == null){
+    public static FacilityKindPage getInstance() {
+        if (instance == null) {
             instance = new FacilityKindPage();
         }
         return instance;
@@ -33,13 +34,19 @@ public class FacilityKindPage extends AbstractPageWithList {
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
-            final JButton removeButton = new JButton("Remove");
+
             buttonPanel.add(addButton);
             buttonPanel.add(editButton);
             buttonPanel.add(removeButton);
             facilityKindList.addListSelectionListener(e -> editButton.setEnabled(true));
             editButton.setEnabled(false);
+            removeButton.setEnabled(false);
             addButton.addActionListener(e -> new AddEditFacilityKindPage(null));
+            removeButton.addActionListener(e -> {
+                if (!Service.deleteFacilityKind(facilityKindList.getSelectedValue())) {
+                    Utils.createErrorDialog(this, "Can not delete facility kind", "Error");
+                }
+            });
             editButton.addActionListener(e -> new AddEditFacilityKindPage(facilityKindList.getSelectedValue()));
         }
         buttonPanel.add(backButton);
@@ -56,7 +63,10 @@ public class FacilityKindPage extends AbstractPageWithList {
         DefaultListModel<FacilityKind> model = new DefaultListModel<>();
         Service.getAllFacilityKinds().forEach(model::addElement);
         facilityKindList.setModel(model);
-        facilityKindList.addListSelectionListener(e -> editButton.setEnabled(true));
+        facilityKindList.addListSelectionListener(e -> {
+            editButton.setEnabled(true);
+            removeButton.setEnabled(true);
+        });
     }
 
     @Override

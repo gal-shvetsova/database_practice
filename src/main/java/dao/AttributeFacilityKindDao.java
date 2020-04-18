@@ -6,6 +6,7 @@ import model.FacilityKind;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class AttributeFacilityKindDao extends AbstractDao {
@@ -24,6 +25,20 @@ public class AttributeFacilityKindDao extends AbstractDao {
         List<Object> params = Arrays.asList(newEntity.getName(), newEntity.getFacilityKind().getName(),
                 oldEntity.getName());
         query(sql, params);
+    }
+
+    public static boolean delete(AttributeFacilityKind attributeFacilityKind){
+        String sql = "select * from attribute_facility where id_attribute = ?";
+        List<Object> params = Collections.singletonList(attributeFacilityKind.getName());
+        List<AttributeFacilityKind> result = query(sql, params,
+                AttributeFacilityKindDao::attributeFacilityKindRowMapper);
+        if (!result.isEmpty()){
+            return false;
+        } else {
+            String sql1 = "delete from attribute_facility where id = ?";
+            query(sql, params);
+            return true;
+        }
     }
 
     public static void create(AttributeFacilityKind attributeFacilityKind) {

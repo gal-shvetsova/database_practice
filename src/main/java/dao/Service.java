@@ -116,4 +116,28 @@ public class Service {
     public static void createAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind){
         AttributeFacilityKindDao.create(attributeFacilityKind);
     }
+
+    public static boolean deleteAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind) {
+        return AttributeFacilityKindDao.delete(attributeFacilityKind);
+    }
+
+    public static boolean deleteClub(Club club) {
+        return ClubDao.delete(club);
+    }
+
+    public static boolean deleteCompetition(Competition competition) {
+        return CompetitionDao.delete(competition);
+    }
+
+    public static boolean deleteFacilityKind(FacilityKind facilityKind) {
+        return FacilityKindDao.delete(facilityKind);
+    }
+
+    public static boolean deleteFacility(Facility facility) {
+        return FacilityDao.delete(facility);
+    }
+
+    public static boolean deleteSport(Sport sport) {
+        return SportDao.delete(sport);
+    }
 }

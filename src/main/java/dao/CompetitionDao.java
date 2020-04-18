@@ -7,6 +7,7 @@ import model.Sport;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CompetitionDao extends AbstractDao {
@@ -63,4 +64,16 @@ public class CompetitionDao extends AbstractDao {
                 new Person(PersonDao.personRowMapper(rs, rowNum)));
     }
 
+    public static boolean delete(Competition competition) {
+        String sql = "select count(*) count from organizer_competition where id_competition = ?";
+        List<Object> params = Collections.singletonList(competition.getId());
+        String sql1 = "select count(*) count from participant_competition where id_competition = ?";
+        if(queryCount(sql, params) > 0 || queryCount(sql1, params) > 0){
+            return false;
+        } else {
+            String sql2 = "delete from competition where id = ?";
+            query(sql2, params);
+            return true;
+        }
+    }
 }

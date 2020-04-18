@@ -10,7 +10,7 @@ import java.awt.*;
 
 public class ClubPage extends AbstractPageWithList {
     private final JList<Club> clubList = new JList<>(Service.getAllClubs().toArray(new Club[0]));
-
+    private final JButton removeButton = new JButton("Remove");
     private static ClubPage instance;
 
     public static ClubPage getInstance() {
@@ -18,7 +18,6 @@ public class ClubPage extends AbstractPageWithList {
             instance = new ClubPage();
         }
         return instance;
-
     }
 
     private ClubPage() {
@@ -29,16 +28,22 @@ public class ClubPage extends AbstractPageWithList {
         final JPanel buttonPanel = new JPanel();
 
         container.add(clubList, BorderLayout.NORTH);
-        editButton.setEnabled(false);
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
-            final JButton removeButton = new JButton("Remove");
+
+            editButton.setEnabled(false);
+            removeButton.setEnabled(false);
             buttonPanel.add(addButton);
             buttonPanel.add(editButton);
             buttonPanel.add(removeButton);
             addButton.addActionListener(e -> new AddEditClubPage(null));
             editButton.addActionListener(e -> new AddEditClubPage(clubList.getSelectedValue()));
+            removeButton.addActionListener(e -> {
+                if (!Service.deleteClub(clubList.getSelectedValue())) {
+                    Utils.createErrorDialog(this, "Can not delete club", "Error");
+                }
+            });
             clubList.addListSelectionListener(e -> editButton.setEnabled(true));
         }
 
@@ -57,7 +62,10 @@ public class ClubPage extends AbstractPageWithList {
         DefaultListModel<Club> model = new DefaultListModel<>();
         Service.getAllClubs().forEach(model::addElement);
         clubList.setModel(model);
-        clubList.addListSelectionListener(e -> editButton.setEnabled(true));
+        clubList.addListSelectionListener(e -> {
+            editButton.setEnabled(true);
+            removeButton.setEnabled(true);
+        });
     }
 
     @Override

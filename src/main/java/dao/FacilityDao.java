@@ -6,6 +6,7 @@ import model.FacilityKind;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FacilityDao extends AbstractDao {
@@ -38,5 +39,17 @@ public class FacilityDao extends AbstractDao {
     private static Facility facilityRowManager(ResultSet rs, int rowNum) throws SQLException {
         return new Facility(rs.getString("name"), rs.getString("address"),
                 new FacilityKind(rs.getString("kind")));
+    }
+
+    public static boolean delete(Facility facility) {
+        String sql = "select count(*) count from competition where facility = ?";
+        List<Object> params = Collections.singletonList(facility.getName());
+        if (queryCount(sql, params) > 0){
+            return false;
+        } else {
+            String sql1 = "delete from facility where name = ?";
+            query(sql1, params);
+            return true;
+        }
     }
 }

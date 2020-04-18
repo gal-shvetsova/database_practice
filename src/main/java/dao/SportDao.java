@@ -2,10 +2,10 @@ package dao;
 
 import model.Sport;
 
-import java.sql.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class SportDao extends AbstractDao {
@@ -26,7 +26,21 @@ public class SportDao extends AbstractDao {
         query(sql, params);
     }
 
+    public static boolean delete(Sport sport) {
+        String sql = "select count(*) count from competition where sport = ?";
+        String sql1 = "select count(*) count from sportsman_characteristic where sport = ?";
+        List<Object> params = Collections.singletonList(sport.getName());
+        if (queryCount(sql, params) > 0 || queryCount(sql1, params) > 0){
+            return false;
+        } else {
+            String sql2 = "delete from sport where name = ?";
+            query(sql2, params);
+            return true;
+        }
+    }
+
     private static Sport sportRowMapper(ResultSet rs, int rowNum) throws SQLException {
         return new Sport(rs.getString("name"));
     }
+
 }
