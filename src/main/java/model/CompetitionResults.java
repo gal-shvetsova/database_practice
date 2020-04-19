@@ -3,7 +3,7 @@ package model;
 import java.util.List;
 import java.util.Map;
 
-public class CompetitionResults {
+public class CompetitionResults implements Model{
     private final Map<Integer, Integer> results;
     private final List<Person> participants;
     private final Competition competition;

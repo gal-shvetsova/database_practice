@@ -13,11 +13,9 @@ import java.util.List;
 public class CompetitionPage extends AbstractPageWithTable {
     private static CompetitionPage instance;
 
-    private final JTable competitionTable = new JTable();
     private final Object[] columnsHeader = new String[]{"Name", "Sport",
             "Facility", "Start date", "Finish date", "Organizer"};
     private List<Competition> competitionList;
-    private final JButton removeButton = new JButton("Remove");
 
     public static CompetitionPage getInstance() {
         if (instance == null) {
@@ -28,16 +26,14 @@ public class CompetitionPage extends AbstractPageWithTable {
 
     private CompetitionPage() {
         super("Competition");
-        final JButton backButton = new JButton("Back");
         final JPanel buttonPanel = new JPanel();
 
         updateTable();
         Container container = getContentPane();
-        container.add(new JScrollPane(competitionTable), BorderLayout.NORTH);
+
+        container.add(entityPane, BorderLayout.NORTH);
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
-            final JButton addButton = new JButton("Add");
-
             buttonPanel.add(addButton);
             buttonPanel.add(editButton);
             buttonPanel.add(removeButton);
@@ -45,9 +41,9 @@ public class CompetitionPage extends AbstractPageWithTable {
             removeButton.setEnabled(false);
             editButton.setEnabled(false);
             editButton.addActionListener(e ->
-                    new AddEditCompetitionPage(competitionList.get(competitionTable.getSelectedRow())));
+                    new AddEditCompetitionPage(competitionList.get(entityTable.getSelectedRow())));
             removeButton.addActionListener(e -> {
-                if (!Service.deleteCompetition(competitionList.get(competitionTable.getSelectedRow()))) {
+                if (!Service.deleteCompetition(competitionList.get(entityTable.getSelectedRow()))) {
                     Utils.createErrorDialog(this, "Can not delete competition", "Error");
                 }
             });
@@ -68,12 +64,7 @@ public class CompetitionPage extends AbstractPageWithTable {
         competitionList = Service.getCompetitions();
         competitionList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getSport(), e.getFacility().getName(),
                 e.getStartDate(), e.getFinishDate(), e.getOrganizer()}));
-        competitionTable.setModel(model);
-        competitionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionModel selectionModel = competitionTable.getSelectionModel();
-        selectionModel.addListSelectionListener(e -> {
-            editButton.setEnabled(true);
-            removeButton.setEnabled(true);
-        });
+        entityTable.setModel(model);
+        super.updateTable();
     }
 }

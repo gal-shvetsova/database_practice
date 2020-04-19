@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 abstract public class AbstractDao {
     private static final Connection connection = JdbcConnection.getConnection();
@@ -66,12 +67,16 @@ abstract public class AbstractDao {
     private static PreparedStatement prepareStatement(PreparedStatement statement, List<Object> params) throws SQLException {
         for (int i = 0; i < params.size(); i++) {
             Object param = params.get(i);
-            if (param instanceof String){
+            if (param instanceof UUID){
+                statement.setString(i + 1, ((UUID)param).toString());
+            } else if (param instanceof String){
                 statement.setString(i + 1, (String)param);
             } else if (param instanceof Integer){
                 statement.setInt(i + 1, (Integer)param);
             } else if (param instanceof Instant){
                 statement.setTimestamp(i + 1, Timestamp.from((Instant)param));
+            } else {
+                throw new UnsupportedOperationException();
             }
         }
         return statement;

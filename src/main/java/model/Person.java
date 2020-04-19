@@ -2,7 +2,7 @@ package model;
 
 import java.util.UUID;
 
-public class Person {
+public class Person implements Model{
     protected final UUID id;
     final private Role role;
     final private String login;

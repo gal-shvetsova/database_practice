@@ -7,16 +7,28 @@ import model.FacilityKind;
 import javax.swing.*;
 import java.awt.*;
 
-public class AddEditAttributeFacilityKind extends AddEditPage<AttributeFacilityKind> {
-    public AddEditAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind) {
+public class AddEditAttributeFacilityKindPage extends AddEditPage<AttributeFacilityKind> {
+    public AddEditAttributeFacilityKindPage(AttributeFacilityKind attributeFacilityKind) {
         super("Add/Edit attribute facility kind", attributeFacilityKind);
-        Container container = getContentPane();
-        JTextField nameField = new JTextField();
-        JComboBox<FacilityKind> attributeFacilityKindComboBox = new JComboBox<>();
+        final Container container = getContentPane();
+        final JPanel panel = new JPanel();
+        final JTextField nameField = new JTextField();
+        final JComboBox<FacilityKind> attributeFacilityKindComboBox = new JComboBox<>();
+
+        final JLabel nameLabel = new JLabel("Name");
+        final JLabel attributeFacilityKindLabel = new JLabel("Facility kind");
+
+        panel.setLayout(new GridLayout(0,1));
 
         Service.getAllFacilityKinds().forEach(attributeFacilityKindComboBox::addItem);
 
-        container.add(nameField, BorderLayout.NORTH);
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(attributeFacilityKindLabel);
+        panel.add(attributeFacilityKindComboBox);
+
+        container.add(panel, BorderLayout.NORTH);
+
         if (attributeFacilityKind != null){
             nameField.setText(attributeFacilityKind.getName());
             attributeFacilityKindComboBox.setSelectedItem(attributeFacilityKind.getFacilityKind());
@@ -25,7 +37,8 @@ public class AddEditAttributeFacilityKind extends AddEditPage<AttributeFacilityK
         okButton.addActionListener(e -> {
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
-            entity = new AttributeFacilityKind(nameField.getText(), oldEntity.getFacilityKind());
+
+            entity = new AttributeFacilityKind(nameField.getText(), (FacilityKind)attributeFacilityKindComboBox.getSelectedItem());
             if (isUpdate){
                 Service.updateAttributeFacilityKind(oldEntity, entity);
             } else {
@@ -38,7 +51,6 @@ public class AddEditAttributeFacilityKind extends AddEditPage<AttributeFacilityK
             dispose();
         });
 
-        pack();
         this.setVisible(true);
     }
 }

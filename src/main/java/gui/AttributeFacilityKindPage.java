@@ -1,8 +1,7 @@
 package gui;
 
 import dao.Service;
-import gui.addEditPages.AddEditAttributeFacilityKind;
-import gui.addEditPages.AddEditCompetitionPage;
+import gui.addEditPages.AddEditAttributeFacilityKindPage;
 import model.AttributeFacilityKind;
 import model.Role;
 
@@ -15,8 +14,6 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
     private static AttributeFacilityKindPage instance;
 
     private final Object[] columnHeader = new String[]{"Name", "Facility kind"};
-    private final JTable attrTable = new JTable();
-    private final JButton removeButton = new JButton("Remove");
     private List<AttributeFacilityKind> attributeFacilityKindList;
 
     public static AttributeFacilityKindPage getInstance() {
@@ -31,9 +28,9 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
 
         final Container container = getContentPane();
         final JPanel buttonPanel = new JPanel();
-
         final JButton backButton = new JButton("Back");
-        container.add(new JScrollPane(attrTable), BorderLayout.NORTH);
+
+        container.add(entityPane, BorderLayout.NORTH);
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
@@ -44,12 +41,12 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
             buttonPanel.add(editButton);
             buttonPanel.add(removeButton);
 
-            addButton.addActionListener(e -> new AddEditCompetitionPage(null));
+            addButton.addActionListener(e -> new AddEditAttributeFacilityKindPage(null));
             editButton.addActionListener(e ->
-                    new AddEditAttributeFacilityKind(attributeFacilityKindList.get(attrTable.getSelectedRow())));
+                    new AddEditAttributeFacilityKindPage(attributeFacilityKindList.get(entityTable.getSelectedRow())));
 
             removeButton.addActionListener(e -> {
-                if (!Service.deleteAttributeFacilityKind(attributeFacilityKindList.get(attrTable.getSelectedRow()))) {
+                if (!Service.deleteAttributeFacilityKind(attributeFacilityKindList.get(entityTable.getSelectedRow()))) {
                     Utils.createErrorDialog(this,
                             "Can not delete this attribute facility kind",
                             "Error");
@@ -64,7 +61,6 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
             PageManager.hideUpperPage();
             (new PageManager(MainPage.getInstance())).showPage();
         });
-
     }
 
     public void updateTable() {
@@ -72,12 +68,7 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
         model.setColumnIdentifiers(columnHeader);
         attributeFacilityKindList = Service.getAllAttributeFacilityKinds();
         attributeFacilityKindList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getFacilityKind()}));
-        attrTable.setModel(model);
-        attrTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionModel selectionModel = attrTable.getSelectionModel();
-        selectionModel.addListSelectionListener(e -> {
-            editButton.setEnabled(true);
-            removeButton.setEnabled(true);
-        });
+        entityTable.setModel(model);
+        super.updateTable();
     }
 }

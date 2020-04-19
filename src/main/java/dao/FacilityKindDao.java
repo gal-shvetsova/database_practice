@@ -30,9 +30,9 @@ public class FacilityKindDao extends AbstractDao{
     }
 
     public static boolean delete(FacilityKind facilityKind) {
-        String sql = "select count(*) count from attribute_facility_kind where id_kind = ?";
+        String sql = "select count(*) count from attribute_facility_kind where id_type = ?";
         List<Object> params = Collections.singletonList(facilityKind.getName());
-        String sql1 = "select count(*) from facility where kind = ?";
+        String sql1 = "select count(*) count from facility where kind = ?";
         if (queryCount(sql, params) > 0 || queryCount(sql1, params) > 0){
             return false;
         } else {

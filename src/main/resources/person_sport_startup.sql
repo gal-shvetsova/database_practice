@@ -9,35 +9,45 @@ begin
     if (0 = person_sport_count)
     then
         execute immediate
-            'create table person_sport
+            'create table sportsman_characteristic
              (
-                 id_person number not null,
-                 sport varchar(10) not null,
+                 id_sportsman varchar2(100) not null,
+                 sport varchar2(100) not null,
                  category number not null,
-                 CONSTRAINT fk_person_sport
+                 id_trainer varchar2(100) not null,
+                club varchar2(100) not null,
+                 CONSTRAINT fk_sc_sport
                      FOREIGN KEY (sport)
                          REFERENCES SPORT(name),
-                 CONSTRAINT fk_person
-                     FOREIGN KEY (id_person)
+                 CONSTRAINT fk_sc_sportsman
+                     FOREIGN KEY (id_sportsman)
                          REFERENCES PERSON(id),
-                 CONSTRAINT person_sport_pk PRIMARY KEY (id_person, sport)
+                 CONSTRAINT fk_sc_trainer
+                     FOREIGN KEY (id_trainer)
+                         REFERENCES PERSON(id),
+                 CONSTRAINT person_sport_pk PRIMARY KEY (id_sportsman, sport)
              )';
     end if;
 end;
 
 create or replace trigger tr_person_sport_insert
     before insert or update
-    on person_sport
+    on sportsman_characteristic
     for each row
-declare role_person varchar(100);
+declare role_sportsman varchar(100);
+    role_trainer varchar(100);
 begin
     select role
-    into role_person
+    into role_sportsman
     from PERSON where
-            PERSON.ID = :new.ID_PERSON;
-    if (role_person != 'SPORTSMAN')
+            PERSON.ID = :new.id_sportsman;
+    select role
+    into role_trainer
+    from PERSON where
+            PERSON.ID = :new.id_trainer;
+    if (role_sportsman != 'SPORTSMAN' or role_trainer != 'TRAINER')
     then
         RAISE_APPLICATION_ERROR( -20001,
-                                 'Person must be sportsman' );
+                                 'First person must be sportsman, second must be trainer' );
     end if;
 end;

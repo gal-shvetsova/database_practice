@@ -13,10 +13,8 @@ import java.util.List;
 public class FacilityPage extends AbstractPageWithTable {
     private static FacilityPage instance;
 
-    private JTable facilityTable = new JTable();
     private Object[] columnsHeader = new String[]{"Name", "Address", "Kind"};
     private List<Facility> facilityList;
-    private final JButton removeButton = new JButton("Remove");
 
     public static FacilityPage getInstance(){
         if (instance == null){
@@ -27,12 +25,11 @@ public class FacilityPage extends AbstractPageWithTable {
 
     private FacilityPage() {
         super("Facility");
-        final JButton backButton = new JButton("Back");
         final JPanel buttonPanel = new JPanel();
 
         updateTable();
-        Container container = getContentPane();
-        container.add(facilityTable, BorderLayout.NORTH);
+        final Container container = getContentPane();
+        container.add(entityPane, BorderLayout.NORTH);
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
@@ -42,9 +39,9 @@ public class FacilityPage extends AbstractPageWithTable {
             buttonPanel.add(removeButton);
             addButton.addActionListener(e -> new AddEditFacilityPage(null));
             editButton.addActionListener(e ->
-                    new AddEditFacilityPage(facilityList.get(facilityTable.getSelectedRow())));
+                    new AddEditFacilityPage(facilityList.get(entityTable.getSelectedRow())));
             removeButton.addActionListener(e -> {
-                if (!Service.deleteFacility(facilityList.get(facilityTable.getSelectedRow()))){
+                if (!Service.deleteFacility(facilityList.get(entityTable.getSelectedRow()))){
                     Utils.createErrorDialog(this, "Can not delete facility", "Error");
                 }
             });
@@ -54,10 +51,6 @@ public class FacilityPage extends AbstractPageWithTable {
 
         buttonPanel.add(backButton);
         container.add(buttonPanel, BorderLayout.SOUTH);
-        backButton.addActionListener(e -> {
-            PageManager.hideUpperPage();
-            new PageManager(MainPage.getInstance()).showPage();
-        });
     }
 
     @Override
@@ -67,12 +60,7 @@ public class FacilityPage extends AbstractPageWithTable {
         facilityList = Service.getAllFacilities();
         facilityList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getAddress(),
                 e.getKind().getName()}));
-        facilityTable = new JTable(model);
-        facilityTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionModel selectionModel = facilityTable.getSelectionModel();
-        selectionModel.addListSelectionListener(e -> {
-            editButton.setEnabled(true);
-            removeButton.setEnabled(true);
-        });
+        entityTable.setModel(model);
+       super.updateTable();
     }
 }

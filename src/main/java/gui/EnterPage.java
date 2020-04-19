@@ -38,7 +38,6 @@ public class EnterPage extends Page {
             PageManager.hideUpperPage();
             (new PageManager(RegisterPage.getInstance())).showPage();
         });
-
     }
 
 

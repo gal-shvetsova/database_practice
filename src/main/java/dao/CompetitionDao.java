@@ -9,37 +9,48 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class CompetitionDao extends AbstractDao {
     public static List<Competition> getAll() {
         final String sql = "" +
-                "select " +
-                "c.id competition_id " +
-                "c.sport competition_sport " +
-                "c.facility competition_facility " +
-                "c.start_date competition_start_date " +
-                "c.finish_date competition_finish_date " +
-                "p.id id " +
-                "p.role role " +
-                "p.login login " +
-                "p.password password " +
-                "p.surname surname " +
-                "p.name name " +
-                "from shvetsova.competition c join organizer_competition o_c on c.id_competition = p.id" +
-                "join person p on o_c.id_organizer = p.id where p.role = 'ORGANIZER";
+                "select c.id          competition_id,\n" +
+                "       c.name        competition_name,\n" +
+                "       c.sport       competition_sport,\n" +
+                "       c.facility    competition_facility,\n" +
+                "       c.start_date  competition_start_date,\n" +
+                "       c.finish_date competition_finish_date,\n" +
+                "       p.id          sportsman_id,\n" +
+                "       p.role        sportsman_role,\n" +
+                "       p.login       sportsman_login,\n" +
+                "       p.password    sportsman_password,\n" +
+                "       p.surname     sportsman_surname,\n" +
+                "       p.name        sportsman_name\n" +
+                "from competition c\n" +
+                "         join organizer_competition o_c on c.id = o_c.ID_COMPETITION\n" +
+                "         join person p on o_c.id_organizer = p.id\n" +
+                "where p.role = 'ORGANIZER'";
         return query(sql, CompetitionDao::competitionRowMapper);
     }
 
     public static void create(final Competition competition) {
         final String sql = "" +
-                "insert into shvetsova.competition " +
-                "values (?,?,?,?)";
+                "insert into competition " +
+                "values (?,?,?,?,?,?)";
 
-        List<Object> params = Arrays.asList(new Object[]{competition.getName(),
+        final String sql1 = "insert into organizer_competition values (?,?)";
+
+        UUID uuid = UUID.randomUUID();
+        List<Object> params = Arrays.asList(new Object[]{uuid.toString(), competition.getName(),
                 competition.getSport().getName(),
                 competition.getFacility().getName(),
                 competition.getStartDate(), competition.getFinishDate()});
+
+        List<Object> params1 = Arrays.asList(competition.getOrganizer().getId().toString(),
+                uuid.toString());
+
         query(sql, params);
+        query(sql1, params1);
     }
 
     public static void update(final Competition competition) {
@@ -55,20 +66,22 @@ public class CompetitionDao extends AbstractDao {
         query(sql, params);
     }
 
-    private static Competition competitionRowMapper(ResultSet rs, int rowNum) throws SQLException {
-        return new Competition(rs.getInt("id"), rs.getString("name"),
-                new Sport(rs.getString("sport")),
-                FacilityDao.getByName(rs.getString("facility")),
-                rs.getTimestamp("start_date").toInstant(),
-                rs.getTimestamp("finish_date").toInstant(),
-                new Person(PersonDao.personRowMapper(rs, rowNum)));
+    protected static Competition competitionRowMapper(ResultSet rs, int rowNum) throws SQLException {
+        return new Competition(
+                UUID.fromString(rs.getString("competition_id")),
+                rs.getString("competition_name"),
+                new Sport(rs.getString("competition_sport")),
+                FacilityDao.getByName(rs.getString("competition_facility")),
+                rs.getTimestamp("competition_start_date").toInstant(),
+                rs.getTimestamp("competition_finish_date").toInstant(),
+                new Person(PersonDao.sportsmanRowMapper(rs, rowNum)));
     }
 
     public static boolean delete(Competition competition) {
         String sql = "select count(*) count from organizer_competition where id_competition = ?";
         List<Object> params = Collections.singletonList(competition.getId());
         String sql1 = "select count(*) count from participant_competition where id_competition = ?";
-        if(queryCount(sql, params) > 0 || queryCount(sql1, params) > 0){
+        if (queryCount(sql, params) > 0 || queryCount(sql1, params) > 0) {
             return false;
         } else {
             String sql2 = "delete from competition where id = ?";

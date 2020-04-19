@@ -13,11 +13,9 @@ import java.util.List;
 public class SportsmanCharacteristicPage extends AbstractPageWithTable {
     private static SportsmanCharacteristicPage instance;
 
-    private final JTable sportsmanCharacteristicTable = new JTable();
     private final Object[] columnsHeader = new String[]{"Sportsman", "Sport",
             "Category", "Trainer", "Club"};
     private List<SportsmanCharacteristic> sportsmanCompetitionList;
-    private final JButton removeButton = new JButton("Remove");
 
     public static SportsmanCharacteristicPage getInstance() {
         if (instance == null) {
@@ -32,7 +30,7 @@ public class SportsmanCharacteristicPage extends AbstractPageWithTable {
 
         updateTable();
         Container container = getContentPane();
-        container.add(new JScrollPane(sportsmanCharacteristicTable), BorderLayout.NORTH);
+        container.add(entityPane, BorderLayout.NORTH);
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
@@ -45,10 +43,10 @@ public class SportsmanCharacteristicPage extends AbstractPageWithTable {
             editButton.setEnabled(false);
             editButton.addActionListener(e ->
                     new AddEditSportsmanCharacteristicPage(sportsmanCompetitionList.
-                            get(sportsmanCharacteristicTable.getSelectedRow())));
+                            get(entityTable.getSelectedRow())));
             removeButton.addActionListener(e -> {
                 if (!Service.deleteSportCharacteristic(sportsmanCompetitionList
-                        .get(sportsmanCharacteristicTable.getSelectedRow()))) {
+                        .get(entityTable.getSelectedRow()))) {
                     Utils.createErrorDialog(this, "Can not delete sportsman competition", "Error");
                 }
             });
@@ -70,12 +68,7 @@ public class SportsmanCharacteristicPage extends AbstractPageWithTable {
         sportsmanCompetitionList.forEach(e -> model.addRow(new Object[]{e.getSportsman(),
                 e.getSport(), e.getCategory(),
                 e.getTrainer(), e.getClub()}));
-        sportsmanCharacteristicTable.setModel(model);
-        sportsmanCharacteristicTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionModel selectionModel = sportsmanCharacteristicTable.getSelectionModel();
-        selectionModel.addListSelectionListener(e -> {
-            editButton.setEnabled(true);
-            removeButton.setEnabled(true);
-        });
+        entityTable.setModel(model);
+       super.updateTable();
     }
 }

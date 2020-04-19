@@ -10,8 +10,8 @@ begin
         execute immediate
             'create table ORGANIZER_COMPETITION
              (
-                 id_organizer number not null,
-                 id_competition number unique not null,
+                 id_organizer varchar2(100) not null,
+                 id_competition varchar2(100) unique not null,
                  constraint ORGANIZER_COMPETITION_PK PRIMARY KEY (id_organizer, id_competition),
                  CONSTRAINT fk_organizer FOREIGN KEY (id_organizer) references PERSON(id),
                  constraint fk_competition foreign key (id_competition) references competition(id)

@@ -2,25 +2,19 @@ package gui;
 
 import dao.Service;
 import gui.addEditPages.AddEditSportPage;
+import model.Model;
 import model.Role;
 import model.Sport;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SportPage extends Page {
+public class SportPage extends AbstractPageWithList {
     private static SportPage instance;
 
-    protected final static int SIZE_WIDTH = 300;
-    protected final static int SIZE_HEIGHT = 400;
-    protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
-    protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
-    private JList<Sport> sportList;
-    private final JButton editButton = new JButton("Edit");
-    private final JButton removeButton = new JButton("Remove");
 
-    public static SportPage getInstance(){
-        if (instance == null){
+    public static SportPage getInstance() {
+        if (instance == null) {
             instance = new SportPage();
         }
         return instance;
@@ -28,47 +22,37 @@ public class SportPage extends Page {
 
     private SportPage() {
         super("Sport");
-        uploadList();
-        setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
-        Container container = getContentPane();
-        container.add(sportList);
+
+        final Container container = getContentPane();
+        final JPanel panel = new JPanel();
+
+        container.add(entityList, BorderLayout.NORTH);
+        updateList();
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
-            container.add(addButton);
-            container.add(editButton);
-            container.add(removeButton);
+            panel.add(addButton);
+            panel.add(editButton);
+            panel.add(removeButton);
             editButton.setEnabled(false);
             removeButton.setEnabled(false);
             addButton.addActionListener(e -> new AddEditSportPage(null));
-            editButton.addActionListener(e -> new AddEditSportPage(sportList.getSelectedValue()));
+            editButton.addActionListener(e -> new AddEditSportPage((Sport) entityList.getSelectedValue()));
             removeButton.addActionListener(e -> {
-                if (!Service.deleteSport(sportList.getSelectedValue())){
+                if (!Service.deleteSport((Sport) entityList.getSelectedValue())) {
                     Utils.createErrorDialog(this, "Can not delete sport", "Error");
                 }
             });
         }
-
-        final JButton backButton = new JButton("Back");
-        container.add(backButton);
-
-        backButton.addActionListener(e -> {
-            PageManager.hideUpperPage();
-            new PageManager(MainPage.getInstance()).showPage();
-        });
+        panel.add(backButton);
+        container.add(panel, BorderLayout.SOUTH);
     }
 
     @Override
-    public void setVisible(boolean b) {
-        uploadList();
-        this.repaint();
-        super.setVisible(b);
-    }
-
-    public void uploadList() {
-        DefaultListModel<Sport> model = new DefaultListModel<>();
+    public void updateList() {
+        DefaultListModel<Model> model = new DefaultListModel<>();
         Service.getAllSports().forEach(model::addElement);
-        sportList = new JList<>(model);
-        sportList.addListSelectionListener(e -> editButton.setEnabled(true));
+        entityList.setModel(model);
+        super.updateList();
     }
 }

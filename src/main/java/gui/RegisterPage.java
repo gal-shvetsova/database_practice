@@ -23,10 +23,12 @@ public class RegisterPage extends Page {
         JButton backButton = new JButton("Back");
         JButton sportsmanButton = new JButton("Register as sportsman");
         JButton organizerTrainerButton = new JButton("Register as organizer/trainer");
+
         Container container = getContentPane();
         container.setLayout(new GridLayout(0,1));
         container.add(sportsmanButton);
         container.add(organizerTrainerButton);
+        container.add(backButton);
         setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
         sportsmanButton.addActionListener(e -> {
             PageManager.hideUpperPage();

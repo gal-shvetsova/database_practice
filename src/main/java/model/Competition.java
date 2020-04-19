@@ -1,9 +1,10 @@
 package model;
 
 import java.time.Instant;
+import java.util.UUID;
 
-public class Competition {
-    private final Integer id;
+public class Competition implements Model{
+    private final UUID id;
     private final String name;
     private final Sport sport;
     private final Facility facility;
@@ -11,7 +12,7 @@ public class Competition {
     private final Instant finishDate;
     private final Person organizer;
 
-    public Competition(Integer id, String name, Sport sport, Facility facility, Instant startDate, Instant finishDate, Person organizer) {
+    public Competition(UUID id, String name, Sport sport, Facility facility, Instant startDate, Instant finishDate, Person organizer) {
         this.id = id;
         this.name = name;
         this.sport = sport;
@@ -21,7 +22,7 @@ public class Competition {
         this.organizer = organizer;
     }
 
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
 

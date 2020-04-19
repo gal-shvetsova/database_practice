@@ -15,7 +15,7 @@ begin
                  id_facility varchar(100) not null,
                  value number not null,
                  constraint ATTRIBUTE_FACILITY_PK primary key (name_attribute, id_facility),
-                 constraint fk_attr foreign key (name_attribute) references ATTRIBUTE_FACILITY_KIND(id),
+                 constraint fk_attr foreign key (name_attribute) references ATTRIBUTE_FACILITY_KIND(NAME),
                  constraint fk_facility_attr foreign key (id_facility) references FACILITY(name)
              )';
     end if;

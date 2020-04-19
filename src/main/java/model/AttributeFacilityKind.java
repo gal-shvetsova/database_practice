@@ -18,4 +18,9 @@ public class AttributeFacilityKind {
     public FacilityKind getFacilityKind() {
         return facilityKind;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
