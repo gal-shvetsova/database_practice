@@ -15,7 +15,6 @@ public class RegisterSportsmanPage extends AbstractRegisterPage {
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
     protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
 
-
     public static RegisterSportsmanPage getInstance(){
         if (instance == null){
             instance = new RegisterSportsmanPage();
@@ -35,7 +34,6 @@ public class RegisterSportsmanPage extends AbstractRegisterPage {
         JLabel categoryLabel = new JLabel("Category");
 
         Container container = getContentPane();
-
 
         setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
 
@@ -68,16 +66,14 @@ public class RegisterSportsmanPage extends AbstractRegisterPage {
                 PageManager.hideUpperPage();
                 (new PageManager(MainPage.getInstance())).showPage();
             } else {
-                JOptionPane.showMessageDialog(this,
-                        "Signing in error", "Error", JOptionPane.ERROR_MESSAGE);
+                Utils.createErrorDialog(this,
+                        "Signing in error", "Error");
             }
         });
-
 
         cancelButton.addActionListener(e -> {
             PageManager.hideUpperPage();
             (new PageManager(RegisterPage.getInstance())).showPage();
         });
-
     }
 }

@@ -10,7 +10,7 @@ begin
         execute immediate
             'create table club
              (
-                 name varchar(10) not null primary key
+                 name varchar(100) not null primary key
              )';
     end if;
 end;

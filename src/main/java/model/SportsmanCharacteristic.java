@@ -1,6 +1,6 @@
 package model;
 
-public class SportsmanCharacteristic {
+public class SportsmanCharacteristic implements Model{
     private final Person trainer;
     private final Sport sport;
     private final Person sportsman;

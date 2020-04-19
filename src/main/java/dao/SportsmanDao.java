@@ -38,12 +38,13 @@ public class SportsmanDao extends AbstractDao {
     public static void update(Sportsman newSportsman, Sportsman oldSportsman){
         final String sql = "UPDATE PERSON SET NAME = ?, SURNAME = ? WHERE ID = ?";
         List<Object> params = Arrays.asList(newSportsman.getName(),
-                newSportsman.getSurname(), newSportsman.getId());
+                newSportsman.getSurname(), oldSportsman.getId());
         query(sql, params);
         final String sql1 = "UPDATE SPORTSMAN_CHARACTERISTIC SET SPORT = ?, CATEGORY = ?, ID_TRAINER = ?, CLUB = ? " +
                 "WHERE ID_SPORTSMAN = ? AND ID_TRAINER = ?";
         List<Object> params1 = Arrays.asList(newSportsman.getSport().getName(), newSportsman.getCategory(),
-                oldSportsman.getTrainer().getId());
+                newSportsman.getTrainer().getId(), newSportsman.getClub().getName(),
+                oldSportsman.getName(), oldSportsman.getTrainer().getId());
         query(sql1, params1);
     }
 

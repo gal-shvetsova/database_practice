@@ -10,26 +10,35 @@ import java.awt.*;
 public class AddEditFacilityPage extends AddEditPage<Facility> {
     public AddEditFacilityPage(Facility facility) {
         super("Facility", facility);
-        Container container = getContentPane();
-        container.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JTextField nameField = new JTextField();
-        JTextField addressField = new JTextField();
-        JComboBox<FacilityKind> kindCheckBox = new JComboBox<>();
+        final Container container = getContentPane();
+
+        final JTextField nameField = new JTextField();
+        final JTextField addressField = new JTextField();
+        final JComboBox<FacilityKind> kindCheckBox = new JComboBox<>();
+
+        final JLabel nameLabel = new JLabel("Name");
+        final JLabel addressLabel = new JLabel("Address");
+        final JLabel kindLabel = new JLabel("Kind");
+
+        final JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0,1));
+
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(addressLabel);
+        panel.add(addressField);
+        panel.add(kindLabel);
+        panel.add(kindCheckBox);
+
         Service.getAllFacilityKinds().forEach(kindCheckBox::addItem);
 
         if (facility != null) {
             nameField.setText(facility.getName());
             addressField.setText(facility.getAddress());
             kindCheckBox.setSelectedItem(facility.getKind());
-        } else {
-            nameField.setText("      name     ");
-            addressField.setText("      address    ");
-            kindCheckBox.setSelectedIndex(0);
         }
 
-        container.add(nameField);
-        container.add(addressField);
-        container.add(kindCheckBox);
+        container.add(panel, BorderLayout.NORTH);
 
         okButton.addActionListener(e -> {
             entity = new Facility(nameField.getText(), addressField.getText(),
@@ -48,7 +57,6 @@ public class AddEditFacilityPage extends AddEditPage<Facility> {
             dispose();
         });
 
-        pack();
         this.setVisible(true);
     }
 }

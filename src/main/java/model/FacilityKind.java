@@ -1,6 +1,6 @@
 package model;
 
-public class FacilityKind {
+public class FacilityKind implements Model {
     private final String name;
 
     public FacilityKind(String name) {

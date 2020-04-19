@@ -10,12 +10,21 @@ public class AddEditClubPage extends AddEditPage<Club> {
 
     public AddEditClubPage(Club club) {
         super("Add/edit club", club);
-        Container container = getContentPane();
-        JTextField nameField = new JTextField();
-        container.add(nameField, BorderLayout.NORTH);
+        final Container container = getContentPane();
+        final JTextField nameField = new JTextField();
+        final JPanel panel = new JPanel();
+        final JLabel nameLabel = new JLabel("Name");
+
+        panel.setLayout(new GridLayout(0,1));
+        panel.add(nameLabel);
+        panel.add(nameField);
+
+        container.add(panel, BorderLayout.NORTH);
+
         if (club != null){
             nameField.setText(entity.getName());
         }
+
         okButton.addActionListener(e -> {
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
@@ -32,7 +41,6 @@ public class AddEditClubPage extends AddEditPage<Club> {
             dispose();
         });
 
-        pack();
         this.setVisible(true);
     }
 

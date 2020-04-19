@@ -11,19 +11,32 @@ import java.awt.*;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.UUID;
 
 public class AddEditCompetitionPage extends AddEditPage<Competition> {
 
     public AddEditCompetitionPage(Competition competition) {
         super("Add/edit competition", competition);
-        Container container = getContentPane();
-        JTextField nameField = new JTextField();
-        JComboBox<Sport> sportComboBox = new JComboBox<>();
-        JComboBox<Facility> facilityComboBox = new JComboBox<>();
-        JComboBox<Person> organizerComboBox = new JComboBox<>();
+        final Container container = getContentPane();
 
-        JTextField startDateText = new JTextField();
-        JTextField finishDateText = new JTextField();
+        final JComboBox<Sport> sportComboBox = new JComboBox<>();
+        final JComboBox<Facility> facilityComboBox = new JComboBox<>();
+        final JComboBox<Person> organizerComboBox = new JComboBox<>();
+
+        final JTextField nameField = new JTextField();
+        final JTextField startDateText = new JTextField();
+        final JTextField finishDateText = new JTextField();
+
+        final JLabel nameLabel = new JLabel("Name");
+        final JLabel sportLabel = new JLabel("Sport");
+        final JLabel facilityLabel = new JLabel("Facility");
+        final JLabel organizerLabel = new JLabel("Organizer");
+        final JLabel startDateLabel = new JLabel("Start date");
+        final JLabel finishDateLabel = new JLabel("Finish date");
+
+        final JPanel panel = new JPanel();
+
+        panel.setLayout(new GridLayout(0,1));
 
         Service.getAllSports().forEach(sportComboBox::addItem);
         Service.getAllFacilities().forEach(facilityComboBox::addItem);
@@ -38,17 +51,30 @@ public class AddEditCompetitionPage extends AddEditPage<Competition> {
             organizerComboBox.setSelectedItem(competition.getOrganizer());
         }
 
-        container.add(nameField, BorderLayout.NORTH);
-        nameField.setText(entity.getName());
+        panel.add(nameLabel);
+        panel.add(nameField);
+        panel.add(sportLabel);
+        panel.add(sportComboBox);
+        panel.add(facilityLabel);
+        panel.add(facilityComboBox);
+        panel.add(organizerLabel);
+        panel.add(organizerComboBox);
+        panel.add(startDateLabel);
+        panel.add(startDateText);
+        panel.add(finishDateLabel);
+        panel.add(finishDateText);
+
+        container.add(panel, BorderLayout.NORTH);
         okButton.addActionListener(e -> {
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
             TemporalAccessor startDate = DateTimeFormatter.ofPattern("yyyy-MM-dd").parse(startDateText.getText());
             TemporalAccessor finishDate = DateTimeFormatter.ofPattern("yyyy-MM-dd").parse(startDateText.getText());
-
-            entity = new Competition(0, nameField.getText(), (Sport) sportComboBox.getSelectedItem(),
-                    (Facility) facilityComboBox.getSelectedItem(), Instant.from(startDate), Instant.from(finishDate),
-                    (Person)organizerComboBox.getSelectedItem());
+            String postfix = "T18:35:24.00Z";
+            entity = new Competition(UUID.randomUUID(), nameField.getText(), (Sport) sportComboBox.getSelectedItem(),
+                    (Facility) facilityComboBox.getSelectedItem(), Instant.parse(startDateText.getText() + postfix ),
+                    Instant.parse(finishDateText.getText() + postfix),
+                    (Person) organizerComboBox.getSelectedItem());
 
             if (isUpdate) {
                 Service.updateCompetition(entity);
@@ -62,7 +88,6 @@ public class AddEditCompetitionPage extends AddEditPage<Competition> {
             dispose();
         });
 
-        pack();
         this.setVisible(true);
     }
 }

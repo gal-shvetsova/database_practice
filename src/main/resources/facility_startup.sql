@@ -11,9 +11,9 @@ begin
         execute immediate
             'create table facility
              (
-                 name    varchar(10)          not null primary key,
+                 name    varchar(100)          not null primary key,
                  address varchar2(100) unique not null,
-                 kind    varchar(10)          not null,
+                 kind    varchar(100)          not null,
                  CONSTRAINT fk_facility_kind
                      FOREIGN KEY (kind)
                          REFERENCES FACILITY_KIND(name)

@@ -1,6 +1,6 @@
 package model;
 
-public class Club {
+public class Club implements Model {
     private final String name;
 
     public Club(String name) {

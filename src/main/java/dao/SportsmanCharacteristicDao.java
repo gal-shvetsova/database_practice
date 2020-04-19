@@ -21,7 +21,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
                 "       t.name      trainer_name,\n" +
                 "       t.id        trainer_id,\n" +
                 "       t.surname   trainer_surname,\n" +
-                "       t.password  trainer_page,\n" +
+                "       t.password  trainer_password,\n" +
                 "       t.login     trainer_login,\n" +
                 "       sc.club     club_name,\n" +
                 "       sc.category category,\n" +
@@ -55,6 +55,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
 
     public static void update(SportsmanCharacteristic oldSC, SportsmanCharacteristic newSc) {
         String sql = "update sportsman_characteristic set sport = ?, category = ?, id_trainer = ?, club = ?";
+        PersonDao.updatePerson(newSc.getSportsman());
         List<Object> params = Arrays.asList(newSc.getSport().getName(), newSc.getCategory(),
                 newSc.getTrainer().getId(), newSc.getClub().getName(), oldSC.getSportsman().getId());
         query(sql, params);

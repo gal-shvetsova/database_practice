@@ -22,7 +22,7 @@ public class SportDao extends AbstractDao {
 
     public static void update (Sport oldSport, Sport newSport){
         String sql = "update sport set name = ? where name = ?";
-        List<Object> params = Arrays.asList(new Object[]{oldSport.getName(), newSport.getName()});
+        List<Object> params = Arrays.asList(new Object[]{newSport.getName(), oldSport.getName()});
         query(sql, params);
     }
 

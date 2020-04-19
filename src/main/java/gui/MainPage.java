@@ -1,9 +1,6 @@
 package gui;
 
-import model.FacilityKind;
 import model.Role;
-import model.SportsmanCharacteristic;
-import sun.security.krb5.internal.PAData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +16,7 @@ public class MainPage extends Page {
     private final JButton sportsmanButton = new JButton("Sportsman");
     private final JButton sportButton = new JButton("Sport");
     private final JButton competitionButton = new JButton("Competition");
-    private final JButton competitionSportsmanButton = new JButton("Competition Sportsman");
+    private final JButton competitionParticipantButton = new JButton("Competition Participant");
     private final JButton attributeFacilityButton = new JButton("Attribute facility");
     private final JButton attributeFacilityKindsButton = new JButton("Attribute facility kind");
     private final JButton facilityButton = new JButton("Facility");
@@ -56,13 +53,17 @@ public class MainPage extends Page {
                 setListenersForSportsman();
             case ORGANIZER:
                 container.add(competitionButton);
-                container.add(competitionSportsmanButton);
+                container.add(competitionParticipantButton);
                 container.add(sportsmanButton);
                 setListenersForOrganizer();
         }
     }
 
     private void setListenersForAdmin(){
+        attributeFacilityButton.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(AttributeFacilityPage.getInstance()).showPage();
+        });
         facilityKindButton.addActionListener(e -> {
             PageManager.hideUpperPage();
             new PageManager(FacilityKindPage.getInstance()).showPage();
@@ -92,7 +93,7 @@ public class MainPage extends Page {
 
         facilityButton.addActionListener(e -> {
             PageManager.hideUpperPage();
-            new PageManager(FacilityPage.getInstance());
+            new PageManager(FacilityPage.getInstance()).showPage();
         });
 
         sportsmanCharacteristic.addActionListener(e -> {
@@ -104,12 +105,17 @@ public class MainPage extends Page {
     private void setListenersForOrganizer(){
         competitionButton.addActionListener(e -> {
             PageManager.hideUpperPage();
-            new PageManager(CompetitionPage.getInstance());
+            new PageManager(CompetitionPage.getInstance()).showPage();
         });
 
         sportsmanButton.addActionListener(e -> {
             PageManager.hideUpperPage();
-            new PageManager(new SportsmanPage());
+            new PageManager(new SportsmanPage()).showPage();
+        });
+
+        competitionParticipantButton.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(CompetitionParticipantPage.getInstance()).showPage();
         });
 
     }

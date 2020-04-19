@@ -3,6 +3,7 @@ package dao;
 import model.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class Service {
     public static Person signIn(String login, String password) {
@@ -153,7 +154,36 @@ public class Service {
         SportsmanCharacteristicDao.create(sportsmanCharacteristic);
     }
 
+
     public static void updateSportsmanCharacteristic(SportsmanCharacteristic oldEntity, SportsmanCharacteristic entity) {
         SportsmanCharacteristicDao.update(oldEntity, entity);
+    }
+
+    public static void deleteCompetitionParticipant(CompetitionParticipant competitionParticipant) {
+        CompetitionParticipantDao.delete(competitionParticipant);
+    }
+
+    public static List<CompetitionParticipant> getPersonsByCompetition(Competition competition) {
+        return CompetitionParticipantDao.getAllByCompetition(competition);
+    }
+
+    public static List<Person> getNotParticipantsOf(Competition competition) {
+        return PersonDao.getNotParticipantsOf(competition);
+    }
+
+    public static List<AttributeFacility> getAllAttributes() {
+        return AttributeFacilityDao.getAll();
+    }
+
+    public static List<Facility> getFacilitiesByKind(FacilityKind facilityKind) {
+        return FacilityDao.getAllByKind(facilityKind);
+    }
+
+    public static void deleteAttributeForFacility(AttributeFacility attributeFacility) {
+        AttributeFacilityDao.delete(attributeFacility);
+    }
+
+    public static void createAttributeFacility(AttributeFacility attributeFacility) {
+        AttributeFacilityDao.create(attributeFacility);
     }
 }

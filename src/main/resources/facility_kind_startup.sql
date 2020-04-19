@@ -11,7 +11,7 @@ begin
         execute immediate
             'create table facility_kind
              (
-                 name varchar(10) not null primary key
+                 name varchar(100) not null primary key
              )';
     end if;
 end;

@@ -1,6 +1,6 @@
 package model;
 
-public class Sport {
+public class Sport implements Model{
     private final String name;
 
     public Sport(String name) {

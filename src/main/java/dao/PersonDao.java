@@ -1,9 +1,6 @@
 package dao;
 
-import model.HasId;
-import model.Person;
-import model.Role;
-import model.Sportsman;
+import model.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,14 +38,14 @@ public class PersonDao extends AbstractDao {
     }
 
     public static void insert(Person person) {
-        String sql = "insert into person (role, login, password, surname, name) values (?, ?, ?, ?, ?)";
-        List<Object> params = Arrays.asList(new Object[]{person.getRole(),
+        String sql = "insert into person (id, role, login, password, surname, name) values (?, ?, ?, ?, ?, ?)";
+        List<Object> params = Arrays.asList(new Object[]{ UUID.randomUUID(), person.getRole(),
                 person.getLogin(), person.getPassword(), person.getSurname(), person.getName()});
         query(sql, params);
     }
 
     public static void updatePerson(Person person) {
-        String sql = "update person set name = ? surname = ? where id = ?";
+        String sql = "update person set name = ?, surname = ? where id = ?";
         List<Object> params = Arrays.asList(person.getName(), person.getSurname(), person.getId());
         query(sql, params);
     }
@@ -79,25 +76,59 @@ public class PersonDao extends AbstractDao {
     protected static Person sportsmanRowMapper(ResultSet rs, int rowNum) throws SQLException {
         return new Person(UUID.fromString(rs.getString("sportsman_id")),
                 HasId.getById(Role.class, rs.getString("sportsman_role")),
-                rs.getString("SPORTSMAN_LOGIN"),
-                rs.getString("SPORTSMAN_PASSWORD"),
-                rs.getString("SPORTSMAN_SURNAME"),
-                rs.getString("SPORTSMAN_NAME"));
+                rs.getString("sportsman_login"),
+                rs.getString("sportsman_password"),
+                rs.getString("sportsman_surname"),
+                rs.getString("sportsman_name"));
     }
 
     protected static Person trainerRowMapper(ResultSet rs, int rowNum) throws SQLException {
-        return new Person(UUID.fromString(rs.getString("TRAINER_ID")),
-                HasId.getById(Role.class, rs.getString("TRAINER_ROLE")),
-                rs.getString("TRAINER_LOGIN"),
-                rs.getString("TRAINER_PASSWORD"),
-                rs.getString("TRAINER_SURNAME"),
-                rs.getString("TRAINER_NAME"));
+        return new Person(UUID.fromString(rs.getString("trainer_id")),
+                HasId.getById(Role.class, rs.getString("trainer_role")),
+                rs.getString("trainer_login"),
+                rs.getString("trainer_password"),
+                rs.getString("trainer_surname"),
+                rs.getString("trainer_name"));
     }
 
     public static void registerPerson(Person person) {
         String sql = "insert into person values (?,?,?,?,?,?)";
-        List<Object> params = Arrays.asList(person.getId(), person.getRole().toString(),
+        List<Object> params = Arrays.asList(person.getId().toString(), person.getRole().toString(),
                 person.getLogin(), person.getPassword(), person.getSurname(), person.getName());
         query(sql, params);
+    }
+
+    public static List<Person> getAllByCompetition(Competition competition) {
+        String sql = "" +
+                "select p.ID       id,\n" +
+                "       p.ROLE     role,\n" +
+                "       p.LOGIN    login,\n" +
+                "       p.PASSWORD password,\n" +
+                "       p.SURNAME  surname,\n" +
+                "       p.NAME     name\n" +
+                "from PARTICIPANT_COMPETITION pc\n" +
+                "         join PERSON P on pc.ID_PARTICIPANT = P.ID\n" +
+                "where pc.ID_COMPETITION = ?";
+        List<Object> params = Collections.singletonList(competition.getId());
+        return query(sql, params, PersonDao::personRowMapper);
+    }
+
+    public static List<Person> getNotParticipantsOf(Competition competition) {
+        String sql = "" +
+                "select *\n" +
+                "from PERSON P\n" +
+                "where role = 'SPORTSMAN'\n" +
+                "  and (select count(*)\n" +
+                "       from PARTICIPANT_COMPETITION\n" +
+                "       where ID_PARTICIPANT = P.ID\n" +
+                "         and ID_COMPETITION = ?) = 0\n" +
+                "  and (select count(*)\n" +
+                "       from SPORTSMAN_CHARACTERISTIC sc\n" +
+                "       where sc.ID_SPORTSMAN = p.ID\n" +
+                "         and sc.SPORT = ?) > 0\n";
+
+        List<Object> params = Arrays.asList(competition.getId(), competition.getSport().getName());
+
+        return query(sql, params, PersonDao::personRowMapper);
     }
 }

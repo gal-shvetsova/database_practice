@@ -30,8 +30,9 @@ public class FacilityDao extends AbstractDao {
     }
 
     public static void update(Facility oldFacility, Facility newFacility) {
-        final String sql = "update facility set name ?, address = ?, kind = ? where name = ?";
-        List<Object> params = Arrays.asList(newFacility.getName(), newFacility.getAddress(), newFacility.getKind(),
+        final String sql = "update facility set name = ?, address = ?, kind = ? where name = ?";
+        List<Object> params = Arrays.asList(newFacility.getName(), newFacility.getAddress(),
+                newFacility.getKind().getName(),
                 oldFacility.getName());
         query(sql, params);
     }
@@ -51,5 +52,11 @@ public class FacilityDao extends AbstractDao {
             query(sql1, params);
             return true;
         }
+    }
+
+    public static List<Facility> getAllByKind(FacilityKind facilityKind) {
+        String sql = "select * from facility where kind = ?";
+        List<Object> params = Collections.singletonList(facilityKind.getName());
+        return query(sql, params, FacilityDao::facilityRowManager);
     }
 }

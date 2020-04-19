@@ -3,6 +3,7 @@ package gui;
 import dao.Service;
 import gui.addEditPages.AddEditFacilityKindPage;
 import model.FacilityKind;
+import model.Model;
 import model.Role;
 
 import javax.swing.*;
@@ -10,11 +11,6 @@ import java.awt.*;
 
 public class FacilityKindPage extends AbstractPageWithList {
     private static FacilityKindPage instance;
-
-    private final JList<FacilityKind> facilityKindList =
-            new JList<>(Service.getAllFacilityKinds().toArray(new FacilityKind[0]));
-    private final JButton editButton = new JButton("Edit");
-    private final JButton removeButton = new JButton("Remove");
 
     public static FacilityKindPage getInstance() {
         if (instance == null) {
@@ -29,7 +25,7 @@ public class FacilityKindPage extends AbstractPageWithList {
         final JPanel buttonPanel = new JPanel();
 
         Container container = getContentPane();
-        container.add(facilityKindList, BorderLayout.NORTH);
+        container.add(entityList, BorderLayout.NORTH);
 
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
@@ -38,16 +34,16 @@ public class FacilityKindPage extends AbstractPageWithList {
             buttonPanel.add(addButton);
             buttonPanel.add(editButton);
             buttonPanel.add(removeButton);
-            facilityKindList.addListSelectionListener(e -> editButton.setEnabled(true));
+            entityList.addListSelectionListener(e -> editButton.setEnabled(true));
             editButton.setEnabled(false);
             removeButton.setEnabled(false);
             addButton.addActionListener(e -> new AddEditFacilityKindPage(null));
             removeButton.addActionListener(e -> {
-                if (!Service.deleteFacilityKind(facilityKindList.getSelectedValue())) {
+                if (!Service.deleteFacilityKind((FacilityKind) entityList.getSelectedValue())) {
                     Utils.createErrorDialog(this, "Can not delete facility kind", "Error");
                 }
             });
-            editButton.addActionListener(e -> new AddEditFacilityKindPage(facilityKindList.getSelectedValue()));
+            editButton.addActionListener(e -> new AddEditFacilityKindPage((FacilityKind) entityList.getSelectedValue()));
         }
         buttonPanel.add(backButton);
 
@@ -60,13 +56,10 @@ public class FacilityKindPage extends AbstractPageWithList {
 
     @Override
     public void updateList() {
-        DefaultListModel<FacilityKind> model = new DefaultListModel<>();
+        DefaultListModel<Model> model = new DefaultListModel<>();
         Service.getAllFacilityKinds().forEach(model::addElement);
-        facilityKindList.setModel(model);
-        facilityKindList.addListSelectionListener(e -> {
-            editButton.setEnabled(true);
-            removeButton.setEnabled(true);
-        });
+        entityList.setModel(model);
+        super.updateList();
     }
 
     @Override

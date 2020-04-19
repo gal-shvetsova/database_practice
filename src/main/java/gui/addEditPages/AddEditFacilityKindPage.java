@@ -2,6 +2,7 @@ package gui.addEditPages;
 
 import dao.Service;
 import model.FacilityKind;
+import sun.tools.jps.Jps;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +12,19 @@ public class AddEditFacilityKindPage extends AddEditPage<FacilityKind> {
 
     public AddEditFacilityKindPage(FacilityKind facilityKind) {
         super("Add/Edit facility kind", facilityKind);
-        Container container = getContentPane();
-        JTextField nameField = new JTextField();
+        final Container container = getContentPane();
+        final JTextField nameField = new JTextField();
+        final JLabel nameLabel = new JLabel("Name");
+        final JPanel panel = new JPanel();
+
         if (facilityKind != null) {
             nameField.setText(entity.getName());
         }
-        container.add(nameField, BorderLayout.NORTH);
+        panel.setLayout(new GridLayout(0,1));
+        panel.add(nameLabel);
+        panel.add(nameField);
+
+        container.add(panel, BorderLayout.NORTH);
         okButton.addActionListener(e -> {
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
@@ -33,7 +41,6 @@ public class AddEditFacilityKindPage extends AddEditPage<FacilityKind> {
             dispose();
         });
 
-        pack();
         this.setVisible(true);
     }
 

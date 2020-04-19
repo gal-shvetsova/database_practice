@@ -13,11 +13,11 @@ public class JdbcConnection {
     private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("GMT+7");
     private static final String url = "jdbc:oracle:thin:@localhost:5421:XE";
     private static final String driverName = "oracle.jdbc.driver.OracleDriver";
-    private static final boolean useSSH = true;
+    private static final boolean USE_SSH = true;
     private static final SshConnect sshConnect = new SshConnect();
 
     private static Connection getConnection(boolean a)  {
-        if (useSSH){  //todo: close it
+        if (USE_SSH){
             sshConnect.connect();
         }
         Properties props = new Properties();
@@ -30,7 +30,7 @@ public class JdbcConnection {
             Class.forName(driverName).newInstance();
             return DriverManager.getConnection(url, props);
         } catch (Exception e){
-            if (useSSH){
+            if (USE_SSH){
                 sshConnect.close();
             }
             throw new RuntimeException(e);
@@ -41,9 +41,5 @@ public class JdbcConnection {
 
     public static Connection getConnection() {
         return connection;
-    }
-
-    public static void close(){
-        sshConnect.close();
     }
 }

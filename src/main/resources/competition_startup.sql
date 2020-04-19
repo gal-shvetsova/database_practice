@@ -11,11 +11,12 @@ begin
         execute immediate
             'create table competition
              (
-                 id          varchar(100)      not null primary key,
-                 sport       varchar(10) not null,
-                 facility    varchar(10) not null,
-                 start_date  date        not null,
-                 finish_date date        not null,
+                 id          varchar2(100)      not null primary key,
+                 name        varchar2(100)      not null ,
+                 sport       varchar(100)       not null,
+                 facility    varchar(100)       not null,
+                 start_date  date               not null,
+                 finish_date date               not null,
                 CONSTRAINT fk_competition_sport
                      FOREIGN KEY (sport)
                      REFERENCES SPORT(name),
