@@ -1,6 +1,7 @@
 package dao;
 
 import connection.JdbcConnection;
+import model.Model;
 
 import java.sql.*;
 import java.time.Instant;
@@ -9,11 +10,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-abstract public class AbstractDao {
-    private static final Connection connection = JdbcConnection.getConnection();
+abstract public class AbstractDao{
+    private static final JdbcConnection connection = Service.getConnection();
 
      protected static <E> List<E> query(String sql, List<Object> params, RowMapper<E> rowMapper) {
-        Connection conn = getConnection();
+        Connection conn = getConnection().getConnection();
         try {
             PreparedStatement preStatement = conn.prepareStatement(sql);
             ResultSet resultSet = prepareStatement(preStatement, params).executeQuery();
@@ -39,7 +40,7 @@ abstract public class AbstractDao {
     }
 
     protected static int queryCount(String sql, List<Object> params) {
-        Connection conn = getConnection();
+        Connection conn = getConnection().getConnection();
         try {
             PreparedStatement preStatement = conn.prepareStatement(sql);
             ResultSet resultSet = prepareStatement(preStatement, params).executeQuery();
@@ -54,7 +55,7 @@ abstract public class AbstractDao {
     }
 
     protected static void query(String sql, List<Object> params) {
-        Connection conn = getConnection();
+        Connection conn = getConnection().getConnection();
         try {
             PreparedStatement preStatement = conn.prepareStatement(sql);
             prepareStatement(preStatement, params);
@@ -82,11 +83,13 @@ abstract public class AbstractDao {
         return statement;
     }
 
-    private static Connection getConnection() {
+    private static JdbcConnection getConnection() {
         return AbstractDao.connection; //TODO: connection pool
     }
 
     protected static int entityCountRowMapper(ResultSet rs, int rowNum) throws SQLException {
          return rs.getInt("count");
     }
+
+
 }

@@ -3,37 +3,39 @@ package connection;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+
 import java.util.Properties;
 
-public class SshConnect {
-    private final static int LOCAL_PORT = 5421;
-    private final static int REMOTE_PORT = 1521;
-    private final static String REMOTE_HOST = "84.237.50.81";
-    private final static String HOST = "84.237.52.20";
-    private final static String USER = "shvetsova";
-    private final static String PASSWORD = "7jtwnvC";
-
+public class SshConnect implements AutoCloseable {
     private Session session = null;
 
-    public void connect(){
-        if (session != null){
-            return;
-        }
+    public SshConnect(Properties properties) {
         try {
+            if(!Boolean.parseBoolean(properties.getProperty("ssh.useSsh"))){
+                return;
+            }
+            final int localPort = Integer.parseInt(properties.getProperty("ssh.localPort"));
+            final int remotePort = Integer.parseInt(properties.getProperty("ssh.remotePort"));
+            final String remoteHost = properties.getProperty("ssh.remoteHost");
+            final String host = properties.getProperty("ssh.host");
+            final String user = properties.getProperty("ssh.user");
+            final String password = properties.getProperty("ssh.password");
+
             Properties config = new java.util.Properties();
             config.put("StrictHostKeyChecking", "no");
             JSch jsch = new JSch();
-            session = jsch.getSession(USER, HOST, 22);
-            session.setPassword(PASSWORD);
+            session = jsch.getSession(user, host, 22);
+            session.setPassword(password);
             session.setConfig(config);
             session.connect();
-            session.setPortForwardingL(LOCAL_PORT, REMOTE_HOST, REMOTE_PORT);
+            session.setPortForwardingL(localPort, remoteHost, remotePort);
         } catch (JSchException e) {
             e.printStackTrace();
         }
     }
 
-    public void close(){
+    @Override
+    public void close() {
         if (session != null && session.isConnected()) {
             session.disconnect();
         }

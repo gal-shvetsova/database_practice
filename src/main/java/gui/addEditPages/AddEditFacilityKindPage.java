@@ -2,7 +2,6 @@ package gui.addEditPages;
 
 import dao.Service;
 import model.FacilityKind;
-import sun.tools.jps.Jps;
 
 import javax.swing.*;
 import java.awt.*;

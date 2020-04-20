@@ -1,45 +1,48 @@
 package connection;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.TimeZone;
 
-public class JdbcConnection {
+public class JdbcConnection implements AutoCloseable {
+    private final Connection connection;
+    private boolean closed = false;
 
-    private static final String USERNAME = "shvetsova";
-    private static final String PASSWORD = "7jtwnvC";
-    private static final TimeZone TIME_ZONE = TimeZone.getTimeZone("GMT+7");
-    private static final String url = "jdbc:oracle:thin:@localhost:5421:XE";
-    private static final String driverName = "oracle.jdbc.driver.OracleDriver";
-    private static final boolean USE_SSH = true;
-    private static final SshConnect sshConnect = new SshConnect();
+    public JdbcConnection(Properties properties){
+        final String username = properties.getProperty("db.user");
+        final String password = properties.getProperty("db.password");
+        final String url = properties.getProperty("db.url");
+        final String driverName = properties.getProperty("db.driverName");
 
-    private static Connection getConnection(boolean a)  {
-        if (USE_SSH){
-            sshConnect.connect();
-        }
         Properties props = new Properties();
-        props.setProperty("user", USERNAME);
-        props.setProperty("password", PASSWORD);
-        TimeZone.setDefault(TIME_ZONE);
+        props.setProperty("user", username);
+        props.setProperty("password", password);
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
         Locale.setDefault(Locale.ENGLISH);
+
         try {
-            DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-            Class.forName(driverName).newInstance();
-            return DriverManager.getConnection(url, props);
+            DriverManager.registerDriver((Driver) Class.forName(driverName).newInstance());
+            connection = DriverManager.getConnection(url, props);
         } catch (Exception e){
-            if (USE_SSH){
-                sshConnect.close();
-            }
             throw new RuntimeException(e);
         }
     }
 
-    private static final Connection connection = getConnection(true);
-
-    public static Connection getConnection() {
+    public Connection getConnection() {
+        if (closed){
+            throw new IllegalStateException();
+        }
         return connection;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (connection != null){
+            connection.close();
+            closed = true;
+        }
     }
 }

@@ -1,11 +1,13 @@
 package dao;
 
+import connection.JdbcConnection;
 import model.*;
 
 import java.util.List;
-import java.util.Map;
 
 public class Service {
+    private static JdbcConnection connection;
+
     public static Person signIn(String login, String password) {
         return PersonDao.getByLoginAndPassword(login, password);
     }
@@ -186,4 +188,13 @@ public class Service {
     public static void createAttributeFacility(AttributeFacility attributeFacility) {
         AttributeFacilityDao.create(attributeFacility);
     }
+
+    public static void setConnection(JdbcConnection connection) {
+        Service.connection = connection;
+    }
+
+    public static JdbcConnection getConnection() {
+        return connection;
+    }
+
 }
