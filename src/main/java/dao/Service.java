@@ -208,7 +208,8 @@ public class Service {
         return FacilityDao.getByParams(facilityKind, attributeFacilityKind, from, to, useAttr);
     }
 
-    public static List<SportsmanCharacteristic> getSportsmanBySportOrCategory(Sport sport, Integer from, Integer to) {
-       return SportsmanCharacteristicDao.getBySportOrCategory(sport, from, to);
+    public static List<SportsmanCharacteristic> getSportsmanBySportOrCategory(Sport sport, Person trainer,
+                                                                              Integer from, Integer to) {
+       return SportsmanCharacteristicDao.getBySportOrCategory(sport,trainer, from, to);
     }
 }

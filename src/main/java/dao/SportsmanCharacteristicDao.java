@@ -1,6 +1,7 @@
 package dao;
 
 import model.Club;
+import model.Person;
 import model.Sport;
 import model.SportsmanCharacteristic;
 
@@ -70,11 +71,12 @@ public class SportsmanCharacteristicDao extends AbstractDao {
                 new Club(rs.getString("club_name")), rs.getInt("category"));
     }
 
-    public static List<SportsmanCharacteristic> getBySportOrCategory(Sport sport, Integer from, Integer to) {
-        if (from == null){
+    public static List<SportsmanCharacteristic> getBySportOrCategory(Sport sport, Person trainer,
+                                                                     Integer from, Integer to) {
+        if (from == null) {
             from = DEFAULT_RIGHT_BORDER;
         }
-        if (to == null){
+        if (to == null) {
             to = DEFAULT_LEFT_BORDER;
         }
 
@@ -98,8 +100,12 @@ public class SportsmanCharacteristicDao extends AbstractDao {
                 "         join person t on sc.id_trainer = t.id " +
                 "where sc.sport = ? and sc.category >= ? and sc.category <= ?";
 
-        List<Object> params = Arrays.asList(sport.getName(), from, to);
 
+        List<Object> params = Arrays.asList(sport.getName(), from, to);
+        if (trainer != null) {
+            sql += " and t.id = ?";
+            params = Arrays.asList(sport.getName(), from, to, trainer.getId());
+        }
         return query(sql, params, SportsmanCharacteristicDao::sportsmanCharacteristicRowMapper);
     }
 }

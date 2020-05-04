@@ -13,14 +13,15 @@ public class SportsmanBySportOrCategory extends AbstractFilterPage {
     private static SportsmanBySportOrCategory instance;
 
 
-    private final Object[] columnHeader = new String[]{"Sportsman", "Sport", "Category"};
+    private final Object[] columnHeader = new String[]{"Sportsman", "Sport", "Category", "Trainer"};
     private final List<SportsmanCharacteristic> sportsmanCharacteristicList = new ArrayList<>();
     private final JComboBox<Sport> sportComboBox = new JComboBox<>();
+    private final JComboBox<Person> trainerComboBox = new JComboBox<>();
     private final JTextField categoryValueTextFromField = new JTextField();
     private final JTextField categoryValueTextToField = new JTextField();
 
-    public static SportsmanBySportOrCategory getInstance(){
-        if (instance == null){
+    public static SportsmanBySportOrCategory getInstance() {
+        if (instance == null) {
             instance = new SportsmanBySportOrCategory();
         }
         return instance;
@@ -31,14 +32,18 @@ public class SportsmanBySportOrCategory extends AbstractFilterPage {
         final Container container = getContentPane();
         final JPanel buttonPanel = new JPanel();
         final JLabel sportLabel = new JLabel("Sport");
+        final JLabel trainerLabel = new JLabel("Trainer");
         final JLabel categoryLabel = new JLabel("Category:");
         final JLabel categoryValueFromLabel = new JLabel("From");
         final JLabel categoryValueToLabel = new JLabel("To");
         final JCheckBox useCategory = new JCheckBox("Use category");
+        final JCheckBox useTrainer = new JCheckBox("Use trainer");
 
         Service.getAllSports().forEach(sportComboBox::addItem);
-        useCategory.setSelected(true);
+        Service.getAllTrainers().forEach(trainerComboBox::addItem);
 
+        useCategory.setSelected(true);
+        useTrainer.setSelected(true);
         useCategory.addActionListener(e -> {
             boolean enabled = useCategory.isEnabled();
             categoryValueTextFromField.setEnabled(enabled);
@@ -50,21 +55,23 @@ public class SportsmanBySportOrCategory extends AbstractFilterPage {
 
         okButton.addActionListener(e -> {
             sportsmanCharacteristicList.clear();
-            if (!useCategory.isSelected()){
-                sportsmanCharacteristicList.addAll(Service.getSportsmanBySportOrCategory((Sport) sportComboBox.getSelectedItem(),
-                        null,
-                        null));
-            } else {
-                sportsmanCharacteristicList.addAll(Service.getSportsmanBySportOrCategory((Sport) sportComboBox.getSelectedItem(),
-                        parseInt(categoryValueTextFromField.getText()),
-                        parseInt(categoryValueTextToField.getText())));
-            }
+            Person trainer = useTrainer.isSelected() ? (Person) trainerComboBox.getSelectedItem() : null;
+            Integer from = useCategory.isSelected() ? parseInt(categoryValueTextFromField.getText()) : null,
+                    to = useCategory.isSelected() ? parseInt(categoryValueTextToField.getText()) : null;
 
+            sportsmanCharacteristicList.addAll(Service.getSportsmanBySportOrCategory(
+                    (Sport) sportComboBox.getSelectedItem(),
+                    trainer,
+                    from,
+                    to));
             updateTable();
         });
 
         container.add(sportLabel);
         container.add(sportComboBox);
+        container.add(useTrainer);
+        container.add(trainerLabel);
+        container.add(trainerComboBox);
         container.add(useCategory);
         container.add(categoryLabel);
         container.add(categoryValueFromLabel);
@@ -81,7 +88,8 @@ public class SportsmanBySportOrCategory extends AbstractFilterPage {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnHeader);
         if (sportsmanCharacteristicList != null) {
-            sportsmanCharacteristicList.forEach(e -> model.addRow(new Object[]{e.getSportsman(), e.getSport(), e.getCategory()}));
+            sportsmanCharacteristicList.forEach(e -> model.addRow(new Object[]{e.getSportsman(), e.getSport(),
+                    e.getCategory(), e.getTrainer()}));
         }
         entityTable.setModel(model);
         if (isVisible()) {
