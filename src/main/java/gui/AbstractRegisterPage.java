@@ -3,7 +3,7 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 
-public class AbstractRegisterPage extends Page {
+public abstract class AbstractRegisterPage extends Page {
     protected JTextField login = new JTextField();
     protected JTextField password = new JTextField();
     protected JTextField nameText = new JTextField();

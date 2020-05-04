@@ -72,7 +72,7 @@ public class Service {
         FacilityDao.update(oldFacility, newFacility);
     }
 
-    private static List<Person> getAllPersonsByRole(Role role){
+    private static List<Person> getAllPersonsByRole(Role role) {
         return PersonDao.getAllByRole(role);
     }
 
@@ -84,7 +84,7 @@ public class Service {
         return getAllPersonsByRole(Role.TRAINER);
     }
 
-    public static List<Person> getAllOrganizers(){
+    public static List<Person> getAllOrganizers() {
         return getAllPersonsByRole(Role.ORGANIZER);
     }
 
@@ -96,11 +96,11 @@ public class Service {
         return PersonDao.getAll();
     }
 
-    public static void updatePerson(Person person){
+    public static void updatePerson(Person person) {
         PersonDao.updatePerson(person);
     }
 
-    public static void registerSportsman(Sportsman sportsman){
+    public static void registerSportsman(Sportsman sportsman) {
         PersonDao.registerSportsman(sportsman);
     }
 
@@ -108,7 +108,7 @@ public class Service {
         PersonDao.registerPerson(person);
     }
 
-    public static List<AttributeFacilityKind> getAllAttributeFacilityKinds(){
+    public static List<AttributeFacilityKind> getAllAttributeFacilityKinds() {
         return AttributeFacilityKindDao.getAll();
     }
 
@@ -116,7 +116,7 @@ public class Service {
         AttributeFacilityKindDao.update(oldEntity, newEntity);
     }
 
-    public static void createAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind){
+    public static void createAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind) {
         AttributeFacilityKindDao.create(attributeFacilityKind);
     }
 
@@ -197,4 +197,13 @@ public class Service {
         return connection;
     }
 
+    public static List<AttributeFacilityKind> getAttributesByKind(FacilityKind facilityKind) {
+        return AttributeFacilityKindDao.getByKind(facilityKind);
+    }
+
+    public static List<Facility> getFacilityWithParams(FacilityKind facilityKind,
+                                                       AttributeFacilityKind attributeFacilityKind,
+                                                       Integer from, Integer to, boolean useAttr) {
+        return FacilityDao.getByParams(facilityKind, attributeFacilityKind, from, to, useAttr);
+    }
 }

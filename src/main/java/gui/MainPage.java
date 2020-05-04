@@ -4,6 +4,8 @@ import model.Role;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MainPage extends Page {
     private static MainPage instance;
@@ -23,6 +25,7 @@ public class MainPage extends Page {
     private final JButton facilityKindButton = new JButton("Facility type");
     private final JButton personButton = new JButton("Person");
     private final JButton sportsmanCharacteristic = new JButton("Sportsman characteristic");
+    private final JButton facilityByTypeOrWithAttr = new JButton("Facility with filter");
 
     public static MainPage getInstance(){
         if (instance == null){
@@ -55,6 +58,7 @@ public class MainPage extends Page {
                 container.add(competitionButton);
                 container.add(competitionParticipantButton);
                 container.add(sportsmanButton);
+                container.add(facilityByTypeOrWithAttr);
                 setListenersForOrganizer();
         }
     }
@@ -116,6 +120,11 @@ public class MainPage extends Page {
         competitionParticipantButton.addActionListener(e -> {
             PageManager.hideUpperPage();
             new PageManager(CompetitionParticipantPage.getInstance()).showPage();
+        });
+
+        facilityByTypeOrWithAttr.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(FacilityByTypeOrWithAttrPage.getInstance()).showPage();
         });
 
     }

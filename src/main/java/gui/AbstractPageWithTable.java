@@ -8,7 +8,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-public class AbstractPageWithTable extends Page {
+public abstract class AbstractPageWithTable extends Page {
     protected final static int SIZE_WIDTH = 500;
     protected final static int SIZE_HEIGHT = 500;
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
@@ -41,13 +41,16 @@ public class AbstractPageWithTable extends Page {
         getContentPane().remove(entityPane);
         entityPane = new JScrollPane(entityPane);
         getContentPane().add(entityPane, BorderLayout.NORTH);
+
     }
 
     @Override
     public void setVisible(boolean b) {
         editButton.setEnabled(false);
         removeButton.setEnabled(false);
-        updateTable();
+        if (b) {
+            updateTable();
+        }
         super.setVisible(b);
     }
 }

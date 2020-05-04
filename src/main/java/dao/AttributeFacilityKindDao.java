@@ -47,4 +47,10 @@ public class AttributeFacilityKindDao extends AbstractDao {
                 attributeFacilityKind.getFacilityKind().getName());
         query(sql, params);
     }
+
+    public static List<AttributeFacilityKind> getByKind(FacilityKind facilityKind) {
+        String sql = "select * from attribute_facility_kind where id_type = ?";
+        List<Object> params = Collections.singletonList(facilityKind.getName());
+        return query(sql, params, AttributeFacilityKindDao::attributeFacilityKindRowMapper);
+    }
 }

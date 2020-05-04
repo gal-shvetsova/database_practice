@@ -1,5 +1,6 @@
 package dao;
 
+import model.AttributeFacilityKind;
 import model.Facility;
 import model.FacilityKind;
 
@@ -10,6 +11,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class FacilityDao extends AbstractDao {
+    private static final int DEFAULT_ATTR_RIGHT_BORDER = 0;
+    private static final Integer DEFAULT_ATTR_LEFT_BORDER = 1000000;
+
     public static List<Facility> getAll() {
         final String sql = "select * from facility";
         return query(sql, FacilityDao::facilityRowManager);
@@ -45,7 +49,7 @@ public class FacilityDao extends AbstractDao {
     public static boolean delete(Facility facility) {
         String sql = "select count(*) count from competition where facility = ?";
         List<Object> params = Collections.singletonList(facility.getName());
-        if (queryCount(sql, params) > 0){
+        if (queryCount(sql, params) > 0) {
             return false;
         } else {
             String sql1 = "delete from facility where name = ?";
@@ -57,6 +61,34 @@ public class FacilityDao extends AbstractDao {
     public static List<Facility> getAllByKind(FacilityKind facilityKind) {
         String sql = "select * from facility where kind = ?";
         List<Object> params = Collections.singletonList(facilityKind.getName());
+        return query(sql, params, FacilityDao::facilityRowManager);
+    }
+
+    public static List<Facility> getByParams(FacilityKind facilityKind, AttributeFacilityKind attributeFacilityKind,
+                                             Integer from, Integer to, boolean useAttr) {
+        if (from == null || to < 0) {
+            from = DEFAULT_ATTR_RIGHT_BORDER;
+        }
+
+        if (to == null || to < 0) {
+            to = DEFAULT_ATTR_LEFT_BORDER;
+        }
+
+        String sql;
+        List<Object> params;
+        if (useAttr) {
+            sql = "" +
+                    "select f.name name,\n" +
+                    "       f.ADDRESS address,\n" +
+                    "       f.KIND kind\n" +
+                    "       from FACILITY f join ATTRIBUTE_FACILITY af on " +
+                    "f.NAME = af.ID_FACILITY where f.KIND = ? and af.name_attribute = ? and af.VALUE >= ? and af.VALUE <= ?";
+            params = Arrays.asList(facilityKind.getName(), attributeFacilityKind.getName(), from, to);
+        } else {
+            sql = "" +
+                    "select * from facility where kind = ?";
+            params = Collections.singletonList(facilityKind.getName());
+        }
         return query(sql, params, FacilityDao::facilityRowManager);
     }
 }

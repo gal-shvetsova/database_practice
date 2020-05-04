@@ -9,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class AbstractPageWithList extends Page {
+public abstract class AbstractPageWithList extends Page {
     protected final static int SIZE_WIDTH = 600;
     protected final static int SIZE_HEIGHT = 300;
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;

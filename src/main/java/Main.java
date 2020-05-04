@@ -23,14 +23,11 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        try (SshConnect ignored = new SshConnect(sshProperties);
-             JdbcConnection jdbcConnection = new JdbcConnection(dbProperties)) {
-            Service.setConnection(jdbcConnection);
-            JFrame.setDefaultLookAndFeelDecorated(true);
-            PageManager enterPageManager = new PageManager(EnterPage.getInstance());
-            enterPageManager.showPage();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        SshConnect ignored = new SshConnect(sshProperties);
+        JdbcConnection jdbcConnection = new JdbcConnection(dbProperties);
+        Service.setConnection(jdbcConnection);
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        PageManager enterPageManager = new PageManager(EnterPage.getInstance());
+        enterPageManager.showPage();
     }
 }

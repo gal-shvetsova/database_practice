@@ -28,9 +28,7 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
 
         final Container container = getContentPane();
         final JPanel buttonPanel = new JPanel();
-        final JButton backButton = new JButton("Back");
 
-        container.add(entityPane, BorderLayout.NORTH);
 
         if (PageManager.getRole().equals(Role.ADMIN)) {
             final JButton addButton = new JButton("Add");
