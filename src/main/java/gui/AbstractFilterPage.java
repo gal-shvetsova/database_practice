@@ -11,7 +11,7 @@ public abstract class AbstractFilterPage extends AbstractPageWithTable {
     protected final static int SIZE_HEIGHT = 1000;
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
     protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
-    protected final JButton okButton = new JButton();
+    protected final JButton okButton = new JButton("ok");
 
     protected AbstractFilterPage(String name) {
         super(name);

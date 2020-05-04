@@ -75,7 +75,7 @@ public class PersonDao extends AbstractDao {
 
     protected static Person sportsmanRowMapper(ResultSet rs, int rowNum) throws SQLException {
         return new Person(UUID.fromString(rs.getString("sportsman_id")),
-                HasId.getById(Role.class, rs.getString("sportsman_role")),
+                Role.SPORTSMAN,
                 rs.getString("sportsman_login"),
                 rs.getString("sportsman_password"),
                 rs.getString("sportsman_surname"),
@@ -84,7 +84,7 @@ public class PersonDao extends AbstractDao {
 
     protected static Person trainerRowMapper(ResultSet rs, int rowNum) throws SQLException {
         return new Person(UUID.fromString(rs.getString("trainer_id")),
-                HasId.getById(Role.class, rs.getString("trainer_role")),
+                 Role.TRAINER,
                 rs.getString("trainer_login"),
                 rs.getString("trainer_password"),
                 rs.getString("trainer_surname"),

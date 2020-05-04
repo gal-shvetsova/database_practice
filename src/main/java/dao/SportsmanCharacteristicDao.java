@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class SportsmanCharacteristicDao extends AbstractDao {
+    private static final Integer DEFAULT_RIGHT_BORDER = 0;
+    private static final Integer DEFAULT_LEFT_BORDER = 100;
+
     public static List<SportsmanCharacteristic> getAll() {
         String sql = "" +
                 "select s.name      sportsman_name,\n" +
@@ -67,4 +70,36 @@ public class SportsmanCharacteristicDao extends AbstractDao {
                 new Club(rs.getString("club_name")), rs.getInt("category"));
     }
 
+    public static List<SportsmanCharacteristic> getBySportOrCategory(Sport sport, Integer from, Integer to) {
+        if (from == null){
+            from = DEFAULT_RIGHT_BORDER;
+        }
+        if (to == null){
+            to = DEFAULT_LEFT_BORDER;
+        }
+
+        String sql = "" +
+                "select s.name      sportsman_name,\n" +
+                "       s.id        sportsman_id,\n" +
+                "       s.surname   sportsman_surname,\n" +
+                "       s.password  sportsman_page,\n" +
+                "       s.login     sportsman_login,\n" +
+                "       s.login     sportsman_password,\n" +
+                "       t.name      trainer_name,\n" +
+                "       t.id        trainer_id,\n" +
+                "       t.surname   trainer_surname,\n" +
+                "       t.password  trainer_password,\n" +
+                "       t.login     trainer_login,\n" +
+                "       sc.club     club_name,\n" +
+                "       sc.category category,\n" +
+                "       sc.sport    sport_name\n" +
+                "from sportsman_characteristic sc\n" +
+                "         join person s on sc.id_sportsman = s.id\n" +
+                "         join person t on sc.id_trainer = t.id " +
+                "where sc.sport = ? and sc.category >= ? and sc.category <= ?";
+
+        List<Object> params = Arrays.asList(sport.getName(), from, to);
+
+        return query(sql, params, SportsmanCharacteristicDao::sportsmanCharacteristicRowMapper);
+    }
 }

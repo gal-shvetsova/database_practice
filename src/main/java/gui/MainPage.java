@@ -26,6 +26,7 @@ public class MainPage extends Page {
     private final JButton personButton = new JButton("Person");
     private final JButton sportsmanCharacteristic = new JButton("Sportsman characteristic");
     private final JButton facilityByTypeOrWithAttr = new JButton("Facility with filter");
+    private final JButton sportsmanBySportOrCategory = new JButton("Sportsman by sport or category");
 
     public static MainPage getInstance(){
         if (instance == null){
@@ -59,6 +60,7 @@ public class MainPage extends Page {
                 container.add(competitionParticipantButton);
                 container.add(sportsmanButton);
                 container.add(facilityByTypeOrWithAttr);
+                container.add(sportsmanBySportOrCategory);
                 setListenersForOrganizer();
         }
     }
@@ -127,5 +129,9 @@ public class MainPage extends Page {
             new PageManager(FacilityByTypeOrWithAttrPage.getInstance()).showPage();
         });
 
+        sportsmanBySportOrCategory.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(SportsmanBySportOrCategory.getInstance()).showPage();
+        });
     }
 }

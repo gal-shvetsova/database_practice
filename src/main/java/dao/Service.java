@@ -3,6 +3,7 @@ package dao;
 import connection.JdbcConnection;
 import model.*;
 
+import java.util.Collection;
 import java.util.List;
 
 public class Service {
@@ -205,5 +206,9 @@ public class Service {
                                                        AttributeFacilityKind attributeFacilityKind,
                                                        Integer from, Integer to, boolean useAttr) {
         return FacilityDao.getByParams(facilityKind, attributeFacilityKind, from, to, useAttr);
+    }
+
+    public static List<SportsmanCharacteristic> getSportsmanBySportOrCategory(Sport sport, Integer from, Integer to) {
+       return SportsmanCharacteristicDao.getBySportOrCategory(sport, from, to);
     }
 }
