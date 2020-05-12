@@ -7,6 +7,7 @@ import model.SportsmanCharacteristic;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
                 "select s.name      sportsman_name,\n" +
                 "       s.id        sportsman_id,\n" +
                 "       s.surname   sportsman_surname,\n" +
-                "       s.password  sportsman_page,\n" +
+                "       s.password  sportsman_password,\n" +
                 "       s.login     sportsman_login,\n" +
                 "       t.name      trainer_name,\n" +
                 "       t.id        trainer_id,\n" +
@@ -107,5 +108,63 @@ public class SportsmanCharacteristicDao extends AbstractDao {
             params = Arrays.asList(sport.getName(), from, to, trainer.getId());
         }
         return query(sql, params, SportsmanCharacteristicDao::sportsmanCharacteristicRowMapper);
+    }
+
+    public static List<SportsmanCharacteristic> getWithMoreThanOneSport() {
+        String sql = "" +
+                "select s.name      sportsman_name,\n" +
+                "       s.id        sportsman_id,\n" +
+                "       s.surname   sportsman_surname,\n" +
+                "       s.password  sportsman_page,\n" +
+                "       s.login     sportsman_login,\n" +
+                "       s.login     sportsman_password,\n" +
+                "       t.name      trainer_name,\n" +
+                "       t.id        trainer_id,\n" +
+                "       t.surname   trainer_surname,\n" +
+                "       t.password  trainer_password,\n" +
+                "       t.login     trainer_login,\n" +
+                "       sc.club     club_name,\n" +
+                "       sc.category category,\n" +
+                "       sc.sport    sport_name\n" +
+                "from sportsman_characteristic sc\n" +
+                "         join person s on sc.id_sportsman = s.id\n" +
+                "         join person t on sc.id_trainer = t.id " +
+                "";
+        return null;
+
+    }
+
+    public static List<Person> getTrainersForSportsman(Person sportsman) {
+        String sql = "" +
+                "select t.name     trainer_name, \n" +
+                "                       t.id       trainer_id, \n" +
+                "                       t.surname  trainer_surname, \n" +
+                "                       t.password trainer_password, \n" +
+                "                       t.login    trainer_login \n" +
+                "                from sportsman_characteristic sc \n" +
+                "                         join person t on sc.id_trainer = t.id \n" +
+                "                where sc.ID_SPORTSMAN = ? group by t.ID, t.name, t.surname, t.password, t.login";
+        List<Object> params = Collections.singletonList(sportsman.getId());
+
+        return query(sql, params, PersonDao::trainerRowMapper);
+    }
+
+    public static List<Person> getTrainersBySport(Sport sport) {
+        String sql = "" +
+                "select t.name     trainer_name, \n" +
+                "                       t.id       trainer_id, \n" +
+                "                       t.surname  trainer_surname, \n" +
+                "                       t.password trainer_password, \n" +
+                "                       t.login    trainer_login \n" +
+                "                from sportsman_characteristic sc \n" +
+                "                         join person t on sc.id_trainer = t.id \n" +
+                "                where sc.sport = ? group by t.ID, t.name, t.surname, t.password, t.login";
+        List<Object> params = Collections.singletonList(sport.getName());
+
+        return query(sql, params, PersonDao::trainerRowMapper);
+    }
+
+    public static List<SportsmanCharacteristic> getWithoutCompetitionOnPetiod(Instant from, Instant to) {
+
     }
 }

@@ -1,8 +1,10 @@
 package dao;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import connection.JdbcConnection;
 import model.*;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
@@ -211,5 +213,41 @@ public class Service {
     public static List<SportsmanCharacteristic> getSportsmanBySportOrCategory(Sport sport, Person trainer,
                                                                               Integer from, Integer to) {
        return SportsmanCharacteristicDao.getBySportOrCategory(sport,trainer, from, to);
+    }
+
+    public static List<SportsmanCharacteristic> getSportsmanWithMoreThanOneSport() {
+        return SportsmanCharacteristicDao.getWithMoreThanOneSport();
+    }
+
+    public static List<Person> getTrainersForSportsman(Person sportsman) {
+        return SportsmanCharacteristicDao.getTrainersForSportsman(sportsman);
+    }
+
+    public static List<Person> getTrainersBySport(Sport sport) {
+        return SportsmanCharacteristicDao.getTrainersBySport(sport);
+    }
+
+    public static List<Competition> getCompetitionsByDate(Instant from, Instant to) {
+        return CompetitionDao.getByDate(from, to);
+    }
+
+    public static List<Competition> getCompetitionsBySport(Sport sport) {
+        return CompetitionDao.getBySport(sport);
+    }
+
+    public static List<Competition> getCompetitionsByOrganizer(Person person) {
+        return CompetitionDao.getByOrganizer(person);
+    }
+
+    public static List<Competition> getCompetitionsByFacility(Facility facility) {
+        return CompetitionDao.getByFacility(facility);
+    }
+
+    public static List<CompetitionParticipant> getWinnersOfCompetition(Competition competition) {
+        return CompetitionParticipantDao.getWinnersOf(competition);
+    }
+
+    public static List<SportsmanCharacteristic> getSportsmenWithoutCompetitionOnPeriod(Instant from, Instant to) {
+        return SportsmanCharacteristicDao.getWithoutCompetitionOnPetiod(from, to);
     }
 }

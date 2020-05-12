@@ -27,6 +27,10 @@ public class MainPage extends Page {
     private final JButton sportsmanCharacteristic = new JButton("Sportsman characteristic");
     private final JButton facilityByTypeOrWithAttr = new JButton("Facility with filter");
     private final JButton sportsmanBySportOrCategory = new JButton("Sportsman by sport or category");
+    private final JButton trainersBySportsman = new JButton("Trainer by sportsman");
+    private final JButton competitionFilter = new JButton("Competition filter");
+    private final JButton facilityByCompetitionPeriod = new JButton("Facility by competition period");
+    private final JButton winnersOfCompetition = new JButton("Winners of competition");
 
     public static MainPage getInstance(){
         if (instance == null){
@@ -61,6 +65,10 @@ public class MainPage extends Page {
                 container.add(sportsmanButton);
                 container.add(facilityByTypeOrWithAttr);
                 container.add(sportsmanBySportOrCategory);
+                container.add(trainersBySportsman);
+                container.add(competitionFilter);
+                container.add(facilityByCompetitionPeriod);
+                container.add(winnersOfCompetition);
                 setListenersForOrganizer();
         }
     }
@@ -132,6 +140,26 @@ public class MainPage extends Page {
         sportsmanBySportOrCategory.addActionListener(e -> {
             PageManager.hideUpperPage();
             new PageManager(SportsmanBySportOrCategory.getInstance()).showPage();
+        });
+
+        trainersBySportsman.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(TrainersBySportsman.getInstance()).showPage();
+        });
+
+        competitionFilter.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(CompetitionByOrganizerOrTime.getInstance()).showPage();
+        });
+
+        facilityByCompetitionPeriod.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(FacilitiesByCompetitionPeriod.getInstance()).showPage();
+        });
+
+        winnersOfCompetition.addActionListener(e -> {
+            PageManager.hideUpperPage();
+            new PageManager(WinnersOfCompetition.getInstance()).showPage();
         });
     }
 }

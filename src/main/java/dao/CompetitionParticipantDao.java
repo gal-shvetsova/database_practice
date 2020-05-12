@@ -55,4 +55,31 @@ public class CompetitionParticipantDao extends AbstractDao {
                 competitionParticipant.getCompetition().getId());
         query(sql, params);
     }
+
+    public static List<CompetitionParticipant> getWinnersOf(Competition competition) {
+        String sql = "" +
+                "select p.ID       sportsman_id,\n" +
+                "       p.ROLE     sportsman_role,\n" +
+                "       p.LOGIN    sportsman_login,\n" +
+                "       p.PASSWORD sportsman_password,\n" +
+                "       p.SURNAME  sportsman_surname,\n" +
+                "       p.NAME     sportsman_name,\n" +
+                "       f.NAME     name,\n" +
+                "       f.ADDRESS  address,\n" +
+                "       f.KIND     kind,\n" +
+                "       C2.ID    competition_id,\n" +
+                "       c2.name competition_name,\n" +
+                "       C2.SPORT competition_sport,\n" +
+                "       c2.facility  competition_facility,\n" +
+                "       C2.START_DATE competition_start_date,\n" +
+                "       C2.FINISH_DATE competition_finish_date,\n" +
+                "       pc.result result\n" +
+                "from PARTICIPANT_COMPETITION pc\n" +
+                "         join PERSON P on pc.ID_PARTICIPANT = P.ID\n" +
+                "         join COMPETITION C2 on pc.ID_COMPETITION = C2.ID\n" +
+                "         join FACILITY F on C2.FACILITY = F.NAME\n" +
+                "where pc.ID_COMPETITION = ? and (result = 1 or result = 2 or result = 3)";
+        List<Object> params = Collections.singletonList(competition.getId());
+        return query(sql, params, CompetitionParticipantDao::competitionParticipantRowMapper);
+    }
 }

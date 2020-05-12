@@ -1,11 +1,13 @@
 package dao;
 
 import model.Competition;
+import model.Facility;
 import model.Person;
 import model.Sport;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -77,6 +79,7 @@ public class CompetitionDao extends AbstractDao {
                 new Person(PersonDao.sportsmanRowMapper(rs, rowNum)));
     }
 
+
     public static boolean delete(Competition competition) {
         String sql = "select count(*) count from organizer_competition where id_competition = ?";
         List<Object> params = Collections.singletonList(competition.getId());
@@ -88,5 +91,93 @@ public class CompetitionDao extends AbstractDao {
             query(sql2, params);
             return true;
         }
+    }
+
+    public static List<Competition> getByDate(Instant from, Instant to) {
+        final String sql = "" +
+                "select c.id          competition_id,\n" +
+                "       c.name        competition_name,\n" +
+                "       c.sport       competition_sport,\n" +
+                "       c.facility    competition_facility,\n" +
+                "       c.start_date  competition_start_date,\n" +
+                "       c.finish_date competition_finish_date,\n" +
+                "       p.id          sportsman_id,\n" +
+                "       p.role        sportsman_role,\n" +
+                "       p.login       sportsman_login,\n" +
+                "       p.password    sportsman_password,\n" +
+                "       p.surname     sportsman_surname,\n" +
+                "       p.name        sportsman_name\n" +
+                "from competition c\n" +
+                "         join organizer_competition o_c on c.id = o_c.ID_COMPETITION\n" +
+                "         join person p on o_c.id_organizer = p.id\n" +
+                "where p.role = 'ORGANIZER' and start_date >= ? and finish_date <= ?";
+        List<Object> params = Arrays.asList(from, to);
+        return query(sql, params, CompetitionDao::competitionRowMapper);
+    }
+
+    public static List<Competition> getBySport(Sport sport) {
+        final String sql = "" +
+                "select c.id          competition_id,\n" +
+                "       c.name        competition_name,\n" +
+                "       c.sport       competition_sport,\n" +
+                "       c.facility    competition_facility,\n" +
+                "       c.start_date  competition_start_date,\n" +
+                "       c.finish_date competition_finish_date,\n" +
+                "       p.id          sportsman_id,\n" +
+                "       p.role        sportsman_role,\n" +
+                "       p.login       sportsman_login,\n" +
+                "       p.password    sportsman_password,\n" +
+                "       p.surname     sportsman_surname,\n" +
+                "       p.name        sportsman_name\n" +
+                "from competition c\n" +
+                "         join organizer_competition o_c on c.id = o_c.ID_COMPETITION\n" +
+                "         join person p on o_c.id_organizer = p.id\n" +
+                "where p.role = 'ORGANIZER' and sport = ?";
+        List<Object> params = Collections.singletonList(sport.getName());
+        return query(sql, params, CompetitionDao::competitionRowMapper);
+    }
+
+    public static List<Competition> getByOrganizer(Person person) {
+        final String sql = "" +
+                "select c.id          competition_id,\n" +
+                "       c.name        competition_name,\n" +
+                "       c.sport       competition_sport,\n" +
+                "       c.facility    competition_facility,\n" +
+                "       c.start_date  competition_start_date,\n" +
+                "       c.finish_date competition_finish_date,\n" +
+                "       p.id          sportsman_id,\n" +
+                "       p.role        sportsman_role,\n" +
+                "       p.login       sportsman_login,\n" +
+                "       p.password    sportsman_password,\n" +
+                "       p.surname     sportsman_surname,\n" +
+                "       p.name        sportsman_name\n" +
+                "from competition c\n" +
+                "         join organizer_competition o_c on c.id = o_c.ID_COMPETITION\n" +
+                "         join person p on o_c.id_organizer = p.id\n" +
+                "where p.role = 'ORGANIZER' and o_c.id_organizer = ?";
+        List<Object> params = Collections.singletonList(person.getId());
+        return query(sql, params, CompetitionDao::competitionRowMapper);
+    }
+
+    public static List<Competition> getByFacility(Facility facility) {
+        final String sql = "" +
+                "select c.id          competition_id,\n" +
+                "       c.name        competition_name,\n" +
+                "       c.sport       competition_sport,\n" +
+                "       c.facility    competition_facility,\n" +
+                "       c.start_date  competition_start_date,\n" +
+                "       c.finish_date competition_finish_date,\n" +
+                "       p.id          sportsman_id,\n" +
+                "       p.role        sportsman_role,\n" +
+                "       p.login       sportsman_login,\n" +
+                "       p.password    sportsman_password,\n" +
+                "       p.surname     sportsman_surname,\n" +
+                "       p.name        sportsman_name\n" +
+                "from competition c\n" +
+                "         join organizer_competition o_c on c.id = o_c.ID_COMPETITION\n" +
+                "         join person p on o_c.id_organizer = p.id\n" +
+                "where p.role = 'ORGANIZER' and  c.facility = ?";
+        List<Object> params = Collections.singletonList(facility.getName());
+        return query(sql, params, CompetitionDao::competitionRowMapper);
     }
 }
