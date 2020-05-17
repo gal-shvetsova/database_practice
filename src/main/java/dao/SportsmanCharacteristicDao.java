@@ -165,6 +165,6 @@ public class SportsmanCharacteristicDao extends AbstractDao {
     }
 
     public static List<SportsmanCharacteristic> getWithoutCompetitionOnPetiod(Instant from, Instant to) {
-
+        return null;
     }
 }

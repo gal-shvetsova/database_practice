@@ -22,7 +22,7 @@ begin
                      REFERENCES SPORT(name),
                  CONSTRAINT fk_competition_facility
                      FOREIGN KEY (facility)
-                         REFERENCES facility(NAME)
+                         REFERENCES facility(ADDRESS)
              )';
     end if;
 end;
