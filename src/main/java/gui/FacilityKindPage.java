@@ -8,6 +8,7 @@ import model.Role;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class FacilityKindPage extends AbstractPageWithList {
     private static FacilityKindPage instance;
@@ -39,8 +40,14 @@ public class FacilityKindPage extends AbstractPageWithList {
             removeButton.setEnabled(false);
             addButton.addActionListener(e -> new AddEditFacilityKindPage(null));
             removeButton.addActionListener(e -> {
-                if (!Service.deleteFacilityKind((FacilityKind) entityList.getSelectedValue())) {
-                    Utils.createErrorDialog(this, "Can not delete facility kind", "Error");
+                try {
+                    if (!Service.deleteFacilityKind((FacilityKind) entityList.getSelectedValue())) {
+                        Utils.createErrorDialog(this, "Can not delete facility kind", "Error");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
             editButton.addActionListener(e -> new AddEditFacilityKindPage((FacilityKind) entityList.getSelectedValue()));
@@ -57,7 +64,13 @@ public class FacilityKindPage extends AbstractPageWithList {
     @Override
     public void updateList() {
         DefaultListModel<Model> model = new DefaultListModel<>();
-        Service.getAllFacilityKinds().forEach(model::addElement);
+        try {
+            Service.getAllFacilityKinds().forEach(model::addElement);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         entityList.setModel(model);
         super.updateList();
     }

@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class SignInPage extends Page {
     private static SignInPage instance;
@@ -14,8 +15,8 @@ public class SignInPage extends Page {
     private final JTextField loginTextField = new JTextField("login");
     private final JTextField passwordTextField = new JTextField("password");
 
-    public static SignInPage getInstance(){
-        if (instance == null){
+    public static SignInPage getInstance() {
+        if (instance == null) {
             instance = new SignInPage();
         }
         return instance;
@@ -38,12 +39,18 @@ public class SignInPage extends Page {
         container.add(backButton);
 
         okButton.addActionListener(e -> {
-            if (PageManager.signIn(loginTextField.getText(), passwordTextField.getText())) {
-                PageManager.hideUpperPage();
-                (new PageManager(MainPage.getInstance())).showPage();
-            } else {
+            try {
+                if (PageManager.signIn(loginTextField.getText(), passwordTextField.getText())) {
+                    PageManager.hideUpperPage();
+                    (new PageManager(MainPage.getInstance())).showPage();
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Signing in error", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this,
-                        "Signing in error", "Error", JOptionPane.ERROR_MESSAGE);
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 

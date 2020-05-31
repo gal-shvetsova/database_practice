@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SportsmanDao extends AbstractDao {
 
-    public static List<Sportsman> getAll() {
+    public static List<Sportsman> getAll() throws SQLException {
         String sql = "SELECT SPORTSMAN.ID       sportsman_id,\n" +
                 "       SPORTSMAN.ROLE     sportsman_role,\n" +
                 "       SPORTSMAN.LOGIN    sportsman_login,\n" +
@@ -35,7 +35,7 @@ public class SportsmanDao extends AbstractDao {
         return query(sql, SportsmanDao::sportsmanRowMapper);
     }
 
-    public static void update(Sportsman newSportsman, Sportsman oldSportsman){
+    public static void update(Sportsman newSportsman, Sportsman oldSportsman) throws SQLException {
         final String sql = "UPDATE PERSON SET NAME = ?, SURNAME = ? WHERE ID = ?";
         List<Object> params = Arrays.asList(newSportsman.getName(),
                 newSportsman.getSurname(), oldSportsman.getId());

@@ -5,6 +5,7 @@ import model.Club;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class AddEditClubPage extends AddEditPage<Club> {
 
@@ -15,13 +16,13 @@ public class AddEditClubPage extends AddEditPage<Club> {
         final JPanel panel = new JPanel();
         final JLabel nameLabel = new JLabel("Name");
 
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new GridLayout(0, 1));
         panel.add(nameLabel);
         panel.add(nameField);
 
         container.add(panel, BorderLayout.NORTH);
 
-        if (club != null){
+        if (club != null) {
             nameField.setText(entity.getName());
         }
 
@@ -29,10 +30,16 @@ public class AddEditClubPage extends AddEditPage<Club> {
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
             entity = new Club(nameField.getText());
-            if (isUpdate){
-                Service.updateClub(oldEntity, entity);
-            } else {
-                Service.createClub(entity);
+            try {
+                if (isUpdate) {
+                    Service.updateClub(oldEntity, entity);
+                } else {
+                    Service.createClub(entity);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             oldEntity = entity;
             okButton.setEnabled(true);

@@ -3,13 +3,11 @@ package gui;
 import dao.Service;
 import model.Person;
 import model.Sport;
-import model.SportsmanCharacteristic;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +22,8 @@ public class TrainersBySportsman extends AbstractFilterPage {
     private final JRadioButton useSportsman = new JRadioButton("Sportsman", true);
 
 
-    public static TrainersBySportsman getInstance(){
-        if (instance == null){
+    public static TrainersBySportsman getInstance() {
+        if (instance == null) {
             instance = new TrainersBySportsman();
         }
 
@@ -39,15 +37,25 @@ public class TrainersBySportsman extends AbstractFilterPage {
         final JLabel sportsmanLabel = new JLabel("Sportsman");
         final JLabel sportLabel = new JLabel("Sport");
 
-        Service.getAllSportsmen().forEach(sportsmanComboBox::addItem);
-        Service.getAllSports().forEach(sportComboBox::addItem);
+        try {
+            Service.getAllSportsmen().forEach(sportsmanComboBox::addItem);
+            Service.getAllSports().forEach(sportComboBox::addItem);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         okButton.addActionListener(e -> {
             trainerList.clear();
-            if (useSportsman.isSelected()) {
-                trainerList.addAll(Service.getTrainersForSportsman((Person) sportsmanComboBox.getSelectedItem()));
-            } else {
-                trainerList.addAll(Service.getTrainersBySport((Sport)sportComboBox.getSelectedItem()));
+            try {
+                if (useSportsman.isSelected()) {
+                    trainerList.addAll(Service.getTrainersForSportsman((Person) sportsmanComboBox.getSelectedItem()));
+                } else {
+                    trainerList.addAll(Service.getTrainersBySport((Sport) sportComboBox.getSelectedItem()));
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             updateTable();
         });

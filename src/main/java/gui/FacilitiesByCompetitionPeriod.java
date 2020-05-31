@@ -6,8 +6,7 @@ import model.Competition;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,8 @@ public class FacilitiesByCompetitionPeriod extends AbstractFilterPage {
     private final JTextField fromTextField = new JTextField();
     private final JTextField toTextField = new JTextField();
 
-    public static FacilitiesByCompetitionPeriod getInstance(){
-        if (instance == null){
+    public static FacilitiesByCompetitionPeriod getInstance() {
+        if (instance == null) {
             instance = new FacilitiesByCompetitionPeriod();
         }
         return instance;
@@ -34,16 +33,19 @@ public class FacilitiesByCompetitionPeriod extends AbstractFilterPage {
         final JLabel fromLabel = new JLabel("From");
         final JLabel toLabel = new JLabel("To");
 
-        okButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                competitionList.clear();
-                String postfix = "T18:35:24.00Z";
+        okButton.addActionListener(e -> {
+            competitionList.clear();
+            String postfix = "T18:35:24.00Z";
+            try {
                 competitionList.addAll(Service.getCompetitionsByDate(
                         Instant.parse(fromTextField.getText() + postfix),
                         Instant.parse(toTextField.getText() + postfix)));
-                updateTable();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+            updateTable();
         });
 
         container.add(fromLabel);

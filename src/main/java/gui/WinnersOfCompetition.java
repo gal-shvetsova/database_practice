@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +32,23 @@ public class WinnersOfCompetition extends AbstractFilterPage {
         final Container container = getContentPane();
         final JLabel competitionLabel = new JLabel("Competition");
 
-        Service.getCompetitions().forEach(competitionComboBox::addItem);
+        try {
+            Service.getCompetitions().forEach(competitionComboBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         okButton.addActionListener(e -> {
             competitionList.clear();
-            competitionList.addAll(Service.getWinnersOfCompetition((Competition)competitionComboBox.getSelectedItem()));
+            try {
+                competitionList.addAll(Service.getWinnersOfCompetition((Competition)competitionComboBox.getSelectedItem()));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
             updateTable();
         });
 

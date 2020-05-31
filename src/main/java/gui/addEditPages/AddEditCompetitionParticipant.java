@@ -9,6 +9,7 @@ import model.Person;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class AddEditCompetitionParticipant extends Page {
 
@@ -29,12 +30,24 @@ public class AddEditCompetitionParticipant extends Page {
         container.add(potentialParticipants);
 
         setBounds(AddEditPage.LOCATION_X, AddEditPage.LOCATION_Y, AddEditPage.SIZE_WIDTH, AddEditPage.SIZE_HEIGHT);
-        Service.getNotParticipantsOf(competition).forEach(potentialParticipants::addItem);
+        try {
+            Service.getNotParticipantsOf(competition).forEach(potentialParticipants::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         okButton.addActionListener(e -> {
-            CompetitionParticipantDao
-                    .addParticipant(new CompetitionParticipant((Person) potentialParticipants.getSelectedItem(),
-                            competition, -1));
+            try {
+                CompetitionParticipantDao
+                        .addParticipant(new CompetitionParticipant((Person) potentialParticipants.getSelectedItem(),
+                                competition, -1));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
             setVisible(false);
             dispose();
         });

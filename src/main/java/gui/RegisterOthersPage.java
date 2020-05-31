@@ -1,10 +1,12 @@
 package gui;
 
 import dao.Service;
-import model.*;
+import model.Person;
+import model.Role;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.UUID;
 
 public class RegisterOthersPage extends AbstractRegisterPage {
@@ -15,8 +17,8 @@ public class RegisterOthersPage extends AbstractRegisterPage {
     protected final static int LOCATION_X = (screenSize.width - SIZE_WIDTH) / 2;
     protected final static int LOCATION_Y = (screenSize.height - SIZE_HEIGHT) / 2;
 
-    public static RegisterOthersPage getInstance(){
-        if (instance == null){
+    public static RegisterOthersPage getInstance() {
+        if (instance == null) {
             instance = new RegisterOthersPage();
         }
         return instance;
@@ -33,24 +35,36 @@ public class RegisterOthersPage extends AbstractRegisterPage {
         roleComboBox.setSelectedIndex(0);
 
         Container container = getContentPane();
-        container.setLayout(new GridLayout(0,1));
+        container.setLayout(new GridLayout(0, 1));
         setBounds(LOCATION_X, LOCATION_Y, SIZE_WIDTH, SIZE_HEIGHT);
         container.add(roleLabel);
         container.add(roleComboBox);
 
-        okButton.addActionListener(e ->{
+        okButton.addActionListener(e -> {
             Person person = new Person(UUID.randomUUID(), ((Role) roleComboBox.getSelectedItem()),
                     login.getText(),
                     password.getText(),
                     surnameText.getText(),
                     nameText.getText());
-            Service.registerPerson(person);
-            if (PageManager.signIn(person.getLogin(), person.getPassword())){
-                PageManager.hideUpperPage();
-                (new PageManager(MainPage.getInstance())).showPage();
-            } else {
+            try {
+                Service.registerPerson(person);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this,
-                        "Signing in error", "Error", JOptionPane.ERROR_MESSAGE);
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            try {
+                if (PageManager.signIn(person.getLogin(), person.getPassword())) {
+                    PageManager.hideUpperPage();
+                    (new PageManager(MainPage.getInstance())).showPage();
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "Signing in error", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 

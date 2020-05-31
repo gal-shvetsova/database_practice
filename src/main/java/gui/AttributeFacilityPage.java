@@ -8,6 +8,7 @@ import model.Role;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class AttributeFacilityPage extends AbstractPageWithTable {
@@ -39,7 +40,13 @@ public class AttributeFacilityPage extends AbstractPageWithTable {
             addButton.addActionListener(e -> new AddEditAttributeFacilityPage(null));
             removeButton.setEnabled(false);
             removeButton.addActionListener(e -> {
-                Service.deleteAttributeForFacility(attrList.get(entityTable.getSelectedRow()));
+                try {
+                    Service.deleteAttributeForFacility(attrList.get(entityTable.getSelectedRow()));
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             });
         }
         buttonPanel.add(backButton);
@@ -51,7 +58,13 @@ public class AttributeFacilityPage extends AbstractPageWithTable {
     protected void updateTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnsHeader);
-        attrList = Service.getAllAttributes();
+        try {
+            attrList = Service.getAllAttributes();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         attrList.forEach(e -> model.addRow(new Object[]{e.getAttributeFacilityKind(), e.getFacility(),
                 e.getValue()}));
         entityTable.setModel(model);

@@ -6,6 +6,7 @@ import model.FacilityKind;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class AddEditAttributeFacilityKindPage extends AddEditPage<AttributeFacilityKind> {
     public AddEditAttributeFacilityKindPage(AttributeFacilityKind attributeFacilityKind) {
@@ -18,9 +19,15 @@ public class AddEditAttributeFacilityKindPage extends AddEditPage<AttributeFacil
         final JLabel nameLabel = new JLabel("Name");
         final JLabel attributeFacilityKindLabel = new JLabel("Facility kind");
 
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new GridLayout(0, 1));
 
-        Service.getAllFacilityKinds().forEach(attributeFacilityKindComboBox::addItem);
+        try {
+            Service.getAllFacilityKinds().forEach(attributeFacilityKindComboBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         panel.add(nameLabel);
         panel.add(nameField);
@@ -29,7 +36,7 @@ public class AddEditAttributeFacilityKindPage extends AddEditPage<AttributeFacil
 
         container.add(panel, BorderLayout.NORTH);
 
-        if (attributeFacilityKind != null){
+        if (attributeFacilityKind != null) {
             nameField.setText(attributeFacilityKind.getName());
             attributeFacilityKindComboBox.setSelectedItem(attributeFacilityKind.getFacilityKind());
             attributeFacilityKindComboBox.setEnabled(false);
@@ -38,11 +45,17 @@ public class AddEditAttributeFacilityKindPage extends AddEditPage<AttributeFacil
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
 
-            entity = new AttributeFacilityKind(nameField.getText(), (FacilityKind)attributeFacilityKindComboBox.getSelectedItem());
-            if (isUpdate){
-                Service.updateAttributeFacilityKind(oldEntity, entity);
-            } else {
-                Service.createAttributeFacilityKind(entity);
+            entity = new AttributeFacilityKind(nameField.getText(), (FacilityKind) attributeFacilityKindComboBox.getSelectedItem());
+            try {
+                if (isUpdate) {
+                    Service.updateAttributeFacilityKind(oldEntity, entity);
+                } else {
+                    Service.createAttributeFacilityKind(entity);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             oldEntity = entity;
             okButton.setEnabled(true);

@@ -4,6 +4,7 @@ import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import connection.JdbcConnection;
 import model.*;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -11,184 +12,184 @@ import java.util.List;
 public class Service {
     private static JdbcConnection connection;
 
-    public static Person signIn(String login, String password) {
+    public static Person signIn(String login, String password) throws SQLException {
         return PersonDao.getByLoginAndPassword(login, password);
     }
 
-    public static List<Club> getAllClubs() {
+    public static List<Club> getAllClubs() throws SQLException {
         return ClubDao.getAll();
     }
 
-    public static void createClub(Club club) {
+    public static void createClub(Club club) throws SQLException {
         ClubDao.insert(club);
     }
 
-    public static void updateClub(Club oldClub, Club newClub) {
+    public static void updateClub(Club oldClub, Club newClub) throws SQLException {
         ClubDao.update(oldClub, newClub);
     }
 
-    public static void createSport(Sport sport) {
+    public static void createSport(Sport sport) throws SQLException {
         SportDao.insert(sport);
     }
 
-    public static void updateSport(Sport oldSport, Sport newSport) {
+    public static void updateSport(Sport oldSport, Sport newSport) throws SQLException {
         SportDao.update(oldSport, newSport);
     }
 
-    public static List<Sport> getAllSports() {
+    public static List<Sport> getAllSports() throws SQLException {
         return SportDao.getAll();
     }
 
-    public static List<FacilityKind> getAllFacilityKinds() {
+    public static List<FacilityKind> getAllFacilityKinds() throws SQLException {
         return FacilityKindDao.getAll();
     }
 
-    public static void createFacilityKind(FacilityKind facilityKind) {
+    public static void createFacilityKind(FacilityKind facilityKind) throws SQLException {
         FacilityKindDao.insert(facilityKind);
     }
 
-    public static void updateFacilityKind(FacilityKind oldFacilityKind, FacilityKind newFacilityKind) {
+    public static void updateFacilityKind(FacilityKind oldFacilityKind, FacilityKind newFacilityKind) throws SQLException {
         FacilityKindDao.update(oldFacilityKind, newFacilityKind);
     }
 
-    public static List<Competition> getCompetitions() {
+    public static List<Competition> getCompetitions() throws SQLException {
         return CompetitionDao.getAll();
     }
 
-    public static void createCompetition(Competition competition) {
+    public static void createCompetition(Competition competition) throws SQLException {
         CompetitionDao.create(competition);
     }
 
-    public static void updateCompetition(Competition competition) {
+    public static void updateCompetition(Competition competition) throws SQLException {
         CompetitionDao.update(competition);
     }
 
-    public static List<Facility> getAllFacilities() {
+    public static List<Facility> getAllFacilities() throws SQLException {
         return FacilityDao.getAll();
     }
 
-    public static void createFacility(Facility facility) {
+    public static void createFacility(Facility facility) throws SQLException {
         FacilityDao.create(facility);
     }
 
-    public static void updateFacility(Facility oldFacility, Facility newFacility) {
+    public static void updateFacility(Facility oldFacility, Facility newFacility) throws SQLException {
         FacilityDao.update(oldFacility, newFacility);
     }
 
-    private static List<Person> getAllPersonsByRole(Role role) {
+    private static List<Person> getAllPersonsByRole(Role role) throws SQLException {
         return PersonDao.getAllByRole(role);
     }
 
-    public static List<Sportsman> getAllSportsmen() {
+    public static List<Sportsman> getAllSportsmen() throws SQLException {
         return SportsmanDao.getAll();
     }
 
-    public static List<Person> getAllTrainers() {
+    public static List<Person> getAllTrainers() throws SQLException {
         return getAllPersonsByRole(Role.TRAINER);
     }
 
-    public static List<Person> getAllOrganizers() {
+    public static List<Person> getAllOrganizers() throws SQLException {
         return getAllPersonsByRole(Role.ORGANIZER);
     }
 
-    public static void updateSportsman(Sportsman oldSportsman, Sportsman newSportsman) {
+    public static void updateSportsman(Sportsman oldSportsman, Sportsman newSportsman) throws SQLException {
         SportsmanDao.update(oldSportsman, newSportsman);
     }
 
-    public static List<Person> getAllPerson() {
+    public static List<Person> getAllPerson() throws SQLException {
         return PersonDao.getAll();
     }
 
-    public static void updatePerson(Person person) {
+    public static void updatePerson(Person person) throws SQLException {
         PersonDao.updatePerson(person);
     }
 
-    public static void registerSportsman(Sportsman sportsman) {
+    public static void registerSportsman(Sportsman sportsman) throws SQLException {
         PersonDao.registerSportsman(sportsman);
     }
 
-    public static void registerPerson(Person person) {
+    public static void registerPerson(Person person) throws SQLException {
         PersonDao.registerPerson(person);
     }
 
-    public static List<AttributeFacilityKind> getAllAttributeFacilityKinds() {
+    public static List<AttributeFacilityKind> getAllAttributeFacilityKinds() throws SQLException {
         return AttributeFacilityKindDao.getAll();
     }
 
-    public static void updateAttributeFacilityKind(AttributeFacilityKind oldEntity, AttributeFacilityKind newEntity) {
+    public static void updateAttributeFacilityKind(AttributeFacilityKind oldEntity, AttributeFacilityKind newEntity) throws SQLException {
         AttributeFacilityKindDao.update(oldEntity, newEntity);
     }
 
-    public static void createAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind) {
+    public static void createAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind) throws SQLException {
         AttributeFacilityKindDao.create(attributeFacilityKind);
     }
 
-    public static boolean deleteAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind) {
+    public static boolean deleteAttributeFacilityKind(AttributeFacilityKind attributeFacilityKind) throws SQLException {
         return AttributeFacilityKindDao.delete(attributeFacilityKind);
     }
 
-    public static boolean deleteClub(Club club) {
+    public static boolean deleteClub(Club club) throws SQLException {
         return ClubDao.delete(club);
     }
 
-    public static boolean deleteCompetition(Competition competition) {
+    public static boolean deleteCompetition(Competition competition) throws SQLException {
         return CompetitionDao.delete(competition);
     }
 
-    public static boolean deleteFacilityKind(FacilityKind facilityKind) {
+    public static boolean deleteFacilityKind(FacilityKind facilityKind) throws SQLException {
         return FacilityKindDao.delete(facilityKind);
     }
 
-    public static boolean deleteFacility(Facility facility) {
+    public static boolean deleteFacility(Facility facility) throws SQLException {
         return FacilityDao.delete(facility);
     }
 
-    public static boolean deleteSport(Sport sport) {
+    public static boolean deleteSport(Sport sport) throws SQLException {
         return SportDao.delete(sport);
     }
 
-    public static List<SportsmanCharacteristic> getSportCharacteristic() {
+    public static List<SportsmanCharacteristic> getSportCharacteristic() throws SQLException {
         return SportsmanCharacteristicDao.getAll();
     }
 
-    public static boolean deleteSportCharacteristic(SportsmanCharacteristic sportsmanCharacteristic) {
+    public static boolean deleteSportCharacteristic(SportsmanCharacteristic sportsmanCharacteristic) throws SQLException {
         return SportsmanCharacteristicDao.delete(sportsmanCharacteristic);
     }
 
-    public static void createSportsmanCharacteristic(SportsmanCharacteristic sportsmanCharacteristic) {
+    public static void createSportsmanCharacteristic(SportsmanCharacteristic sportsmanCharacteristic) throws SQLException {
         SportsmanCharacteristicDao.create(sportsmanCharacteristic);
     }
 
 
-    public static void updateSportsmanCharacteristic(SportsmanCharacteristic oldEntity, SportsmanCharacteristic entity) {
+    public static void updateSportsmanCharacteristic(SportsmanCharacteristic oldEntity, SportsmanCharacteristic entity) throws SQLException {
         SportsmanCharacteristicDao.update(oldEntity, entity);
     }
 
-    public static void deleteCompetitionParticipant(CompetitionParticipant competitionParticipant) {
+    public static void deleteCompetitionParticipant(CompetitionParticipant competitionParticipant) throws SQLException {
         CompetitionParticipantDao.delete(competitionParticipant);
     }
 
-    public static List<CompetitionParticipant> getPersonsByCompetition(Competition competition) {
+    public static List<CompetitionParticipant> getPersonsByCompetition(Competition competition) throws SQLException {
         return CompetitionParticipantDao.getAllByCompetition(competition);
     }
 
-    public static List<Person> getNotParticipantsOf(Competition competition) {
+    public static List<Person> getNotParticipantsOf(Competition competition) throws SQLException {
         return PersonDao.getNotParticipantsOf(competition);
     }
 
-    public static List<AttributeFacility> getAllAttributes() {
+    public static List<AttributeFacility> getAllAttributes() throws SQLException {
         return AttributeFacilityDao.getAll();
     }
 
-    public static List<Facility> getFacilitiesByKind(FacilityKind facilityKind) {
+    public static List<Facility> getFacilitiesByKind(FacilityKind facilityKind) throws SQLException {
         return FacilityDao.getAllByKind(facilityKind);
     }
 
-    public static void deleteAttributeForFacility(AttributeFacility attributeFacility) {
+    public static void deleteAttributeForFacility(AttributeFacility attributeFacility) throws SQLException {
         AttributeFacilityDao.delete(attributeFacility);
     }
 
-    public static void createAttributeFacility(AttributeFacility attributeFacility) {
+    public static void createAttributeFacility(AttributeFacility attributeFacility) throws SQLException {
         AttributeFacilityDao.create(attributeFacility);
     }
 
@@ -200,18 +201,18 @@ public class Service {
         return connection;
     }
 
-    public static List<AttributeFacilityKind> getAttributesByKind(FacilityKind facilityKind) {
+    public static List<AttributeFacilityKind> getAttributesByKind(FacilityKind facilityKind) throws SQLException {
         return AttributeFacilityKindDao.getByKind(facilityKind);
     }
 
     public static List<Facility> getFacilityWithParams(FacilityKind facilityKind,
                                                        AttributeFacilityKind attributeFacilityKind,
-                                                       Integer from, Integer to, boolean useAttr) {
+                                                       Integer from, Integer to, boolean useAttr) throws SQLException {
         return FacilityDao.getByParams(facilityKind, attributeFacilityKind, from, to, useAttr);
     }
 
     public static List<SportsmanCharacteristic> getSportsmanBySportOrCategory(Sport sport, Person trainer,
-                                                                              Integer from, Integer to) {
+                                                                              Integer from, Integer to) throws SQLException {
        return SportsmanCharacteristicDao.getBySportOrCategory(sport,trainer, from, to);
     }
 
@@ -219,31 +220,31 @@ public class Service {
         return SportsmanCharacteristicDao.getWithMoreThanOneSport();
     }
 
-    public static List<Person> getTrainersForSportsman(Person sportsman) {
+    public static List<Person> getTrainersForSportsman(Person sportsman) throws SQLException {
         return SportsmanCharacteristicDao.getTrainersForSportsman(sportsman);
     }
 
-    public static List<Person> getTrainersBySport(Sport sport) {
+    public static List<Person> getTrainersBySport(Sport sport) throws SQLException {
         return SportsmanCharacteristicDao.getTrainersBySport(sport);
     }
 
-    public static List<Competition> getCompetitionsByDate(Instant from, Instant to) {
+    public static List<Competition> getCompetitionsByDate(Instant from, Instant to) throws SQLException {
         return CompetitionDao.getByDate(from, to);
     }
 
-    public static List<Competition> getCompetitionsBySport(Sport sport) {
+    public static List<Competition> getCompetitionsBySport(Sport sport) throws SQLException {
         return CompetitionDao.getBySport(sport);
     }
 
-    public static List<Competition> getCompetitionsByOrganizer(Person person) {
+    public static List<Competition> getCompetitionsByOrganizer(Person person) throws SQLException {
         return CompetitionDao.getByOrganizer(person);
     }
 
-    public static List<Competition> getCompetitionsByFacility(Facility facility) {
+    public static List<Competition> getCompetitionsByFacility(Facility facility) throws SQLException {
         return CompetitionDao.getByFacility(facility);
     }
 
-    public static List<CompetitionParticipant> getWinnersOfCompetition(Competition competition) {
+    public static List<CompetitionParticipant> getWinnersOfCompetition(Competition competition) throws SQLException {
         return CompetitionParticipantDao.getWinnersOf(competition);
     }
 

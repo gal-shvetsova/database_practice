@@ -4,6 +4,7 @@ import dao.Service;
 import model.Person;
 import model.Role;
 
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -38,7 +39,7 @@ public class PageManager{
         pageManagers.poll().hidePage();
     }
 
-    public static boolean signIn(String login, String password) {
+    public static boolean signIn(String login, String password) throws SQLException {
         person = Service.signIn(login, password);
         return person != null;
     }

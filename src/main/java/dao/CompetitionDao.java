@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class CompetitionDao extends AbstractDao {
-    public static List<Competition> getAll() {
+    public static List<Competition> getAll() throws SQLException {
         final String sql = "" +
                 "select c.id          competition_id,\n" +
                 "       c.name        competition_name,\n" +
@@ -35,7 +35,7 @@ public class CompetitionDao extends AbstractDao {
         return query(sql, CompetitionDao::competitionRowMapper);
     }
 
-    public static void create(final Competition competition) {
+    public static void create(final Competition competition) throws SQLException {
         final String sql = "" +
                 "insert into competition " +
                 "values (?,?,?,?,?,?)";
@@ -55,7 +55,7 @@ public class CompetitionDao extends AbstractDao {
         query(sql1, params1);
     }
 
-    public static void update(final Competition competition) {
+    public static void update(final Competition competition) throws SQLException {
         final String sql = "" +
                 "update shvetsova.competition set sport = ?, " +
                 "facility = ?, start_date = ?, finish_date = ? " +
@@ -80,7 +80,7 @@ public class CompetitionDao extends AbstractDao {
     }
 
 
-    public static boolean delete(Competition competition) {
+    public static boolean delete(Competition competition) throws SQLException {
         String sql = "select count(*) count from organizer_competition where id_competition = ?";
         List<Object> params = Collections.singletonList(competition.getId());
         String sql1 = "select count(*) count from participant_competition where id_competition = ?";
@@ -93,7 +93,7 @@ public class CompetitionDao extends AbstractDao {
         }
     }
 
-    public static List<Competition> getByDate(Instant from, Instant to) {
+    public static List<Competition> getByDate(Instant from, Instant to) throws SQLException {
         final String sql = "" +
                 "select c.id          competition_id,\n" +
                 "       c.name        competition_name,\n" +
@@ -115,7 +115,7 @@ public class CompetitionDao extends AbstractDao {
         return query(sql, params, CompetitionDao::competitionRowMapper);
     }
 
-    public static List<Competition> getBySport(Sport sport) {
+    public static List<Competition> getBySport(Sport sport) throws SQLException {
         final String sql = "" +
                 "select c.id          competition_id,\n" +
                 "       c.name        competition_name,\n" +
@@ -137,7 +137,7 @@ public class CompetitionDao extends AbstractDao {
         return query(sql, params, CompetitionDao::competitionRowMapper);
     }
 
-    public static List<Competition> getByOrganizer(Person person) {
+    public static List<Competition> getByOrganizer(Person person) throws SQLException {
         final String sql = "" +
                 "select c.id          competition_id,\n" +
                 "       c.name        competition_name,\n" +
@@ -159,7 +159,7 @@ public class CompetitionDao extends AbstractDao {
         return query(sql, params, CompetitionDao::competitionRowMapper);
     }
 
-    public static List<Competition> getByFacility(Facility facility) {
+    public static List<Competition> getByFacility(Facility facility) throws SQLException {
         final String sql = "" +
                 "select c.id          competition_id,\n" +
                 "       c.name        competition_name,\n" +

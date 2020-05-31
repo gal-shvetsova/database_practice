@@ -8,6 +8,7 @@ import model.FacilityKind;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,27 +40,45 @@ public class FacilityByTypeOrWithAttrPage extends AbstractFilterPage {
         final JLabel attributeValueToLabel = new JLabel("To");
         final JCheckBox useAttribute = new JCheckBox("Use attribute");
 
-        Service.getAllFacilityKinds().forEach(facilityKindComboBox::addItem);
-        Service.getAllAttributeFacilityKinds().forEach(attributeFacilityKindComboBox::addItem);
+        try {
+            Service.getAllFacilityKinds().forEach(facilityKindComboBox::addItem);
+            Service.getAllAttributeFacilityKinds().forEach(attributeFacilityKindComboBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         facilityKindComboBox.addActionListener(e -> {
             attributeFacilityKindComboBox.removeAllItems();
-            Service.getAttributesByKind((FacilityKind) facilityKindComboBox.getSelectedItem())
-                    .forEach(attributeFacilityKindComboBox::addItem);
+            try {
+                Service.getAttributesByKind((FacilityKind) facilityKindComboBox.getSelectedItem())
+                        .forEach(attributeFacilityKindComboBox::addItem);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         okButton.addActionListener(e -> {
             facilityList.clear();
-            if (useAttribute.isSelected()) {
-                facilityList.addAll(Service.getFacilityWithParams((FacilityKind) facilityKindComboBox.getSelectedItem()
-                        , (AttributeFacilityKind) attributeFacilityKindComboBox.getSelectedItem(),
-                        parseInt(attrValueTextFromField.getText()), parseInt(attrValueTextToField.getText()),
-                        useAttribute.isSelected()));
-            } else {
-                facilityList.addAll(Service.getFacilityWithParams((FacilityKind) facilityKindComboBox.getSelectedItem()
-                        , null,
-                        null, null,
-                        useAttribute.isSelected()));
+            try {
+                if (useAttribute.isSelected()) {
+                    facilityList.addAll(Service.getFacilityWithParams((FacilityKind) facilityKindComboBox.getSelectedItem()
+                            , (AttributeFacilityKind) attributeFacilityKindComboBox.getSelectedItem(),
+                            parseInt(attrValueTextFromField.getText()), parseInt(attrValueTextToField.getText()),
+                            useAttribute.isSelected()));
+                } else {
+                    facilityList.addAll(Service.getFacilityWithParams((FacilityKind) facilityKindComboBox.getSelectedItem()
+                            , null,
+                            null, null,
+                            useAttribute.isSelected()));
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             updateTable();
         });

@@ -8,6 +8,7 @@ import model.Sport;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -36,11 +37,17 @@ public class AddEditCompetitionPage extends AddEditPage<Competition> {
 
         final JPanel panel = new JPanel();
 
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new GridLayout(0, 1));
 
-        Service.getAllSports().forEach(sportComboBox::addItem);
-        Service.getAllFacilities().forEach(facilityComboBox::addItem);
-        Service.getAllOrganizers().forEach(organizerComboBox::addItem);
+        try {
+            Service.getAllSports().forEach(sportComboBox::addItem);
+            Service.getAllFacilities().forEach(facilityComboBox::addItem);
+            Service.getAllOrganizers().forEach(organizerComboBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         if (competition != null) {
             nameField.setText(competition.getName());
@@ -72,14 +79,18 @@ public class AddEditCompetitionPage extends AddEditPage<Competition> {
             TemporalAccessor finishDate = DateTimeFormatter.ofPattern("yyyy-MM-dd").parse(startDateText.getText());
             String postfix = "T18:35:24.00Z";
             entity = new Competition(UUID.randomUUID(), nameField.getText(), (Sport) sportComboBox.getSelectedItem(),
-                    (Facility) facilityComboBox.getSelectedItem(), Instant.parse(startDateText.getText() + postfix ),
+                    (Facility) facilityComboBox.getSelectedItem(), Instant.parse(startDateText.getText() + postfix),
                     Instant.parse(finishDateText.getText() + postfix),
                     (Person) organizerComboBox.getSelectedItem());
 
-            if (isUpdate) {
-                Service.updateCompetition(entity);
-            } else {
-                Service.createCompetition(entity);
+            try {
+                if (isUpdate) {
+                    Service.updateCompetition(entity);
+                } else {
+                    Service.createCompetition(entity);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
             okButton.setEnabled(true);
             cancelButton.setEnabled(true);

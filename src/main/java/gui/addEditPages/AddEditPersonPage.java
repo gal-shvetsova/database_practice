@@ -6,6 +6,7 @@ import model.Role;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class AddEditPersonPage extends AddEditPage<Person> {
 
@@ -48,7 +49,13 @@ public class AddEditPersonPage extends AddEditPage<Person> {
                     surnameField.getText(), nameField.getText());
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
-            Service.updatePerson(entity);
+            try {
+                Service.updatePerson(entity);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
             okButton.setEnabled(true);
             cancelButton.setEnabled(true);
             oldEntity = entity;

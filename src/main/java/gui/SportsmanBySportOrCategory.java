@@ -1,13 +1,14 @@
 package gui;
 
 import dao.Service;
-import model.*;
+import model.Person;
+import model.Sport;
+import model.SportsmanCharacteristic;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,14 @@ public class SportsmanBySportOrCategory extends AbstractFilterPage {
         final JRadioButton usePeriod = new JRadioButton("By period");
         final JButton getSportsmanWithMoreThanOneSport = new JButton("Get sportsman with more than one sport");
 
-        Service.getAllSports().forEach(sportComboBox::addItem);
-        Service.getAllTrainers().forEach(trainerComboBox::addItem);
+        try {
+            Service.getAllSports().forEach(sportComboBox::addItem);
+            Service.getAllTrainers().forEach(trainerComboBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         final ButtonGroup buttonGroup = new ButtonGroup();
         buttonGroup.add(useCategory);
@@ -69,7 +76,7 @@ public class SportsmanBySportOrCategory extends AbstractFilterPage {
 
         okButton.addActionListener(e -> {
             sportsmanCharacteristicList.clear();
-            if (usePeriod.isSelected()){
+            if (usePeriod.isSelected()) {
                 String postfix = "T18:35:24.00Z";
                 sportsmanCharacteristicList.addAll(Service.getSportsmenWithoutCompetitionOnPeriod(
                         Instant.parse(dateValueFromLabel.getText() + postfix),
@@ -80,11 +87,17 @@ public class SportsmanBySportOrCategory extends AbstractFilterPage {
             Integer from = useCategory.isSelected() ? parseInt(categoryValueTextFromField.getText()) : null,
                     to = useCategory.isSelected() ? parseInt(categoryValueTextToField.getText()) : null;
 
-            sportsmanCharacteristicList.addAll(Service.getSportsmanBySportOrCategory(
-                    (Sport) sportComboBox.getSelectedItem(),
-                    trainer,
-                    from,
-                    to));
+            try {
+                sportsmanCharacteristicList.addAll(Service.getSportsmanBySportOrCategory(
+                        (Sport) sportComboBox.getSelectedItem(),
+                        trainer,
+                        from,
+                        to));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
             updateTable();
         });
 

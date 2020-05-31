@@ -8,6 +8,7 @@ import model.Role;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class AttributeFacilityKindPage extends AbstractPageWithTable {
@@ -44,10 +45,16 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
                     new AddEditAttributeFacilityKindPage(attributeFacilityKindList.get(entityTable.getSelectedRow())));
 
             removeButton.addActionListener(e -> {
-                if (!Service.deleteAttributeFacilityKind(attributeFacilityKindList.get(entityTable.getSelectedRow()))) {
-                    Utils.createErrorDialog(this,
-                            "Can not delete this attribute facility kind",
-                            "Error");
+                try {
+                    if (!Service.deleteAttributeFacilityKind(attributeFacilityKindList.get(entityTable.getSelectedRow()))) {
+                        Utils.createErrorDialog(this,
+                                "Can not delete this attribute facility kind",
+                                "Error");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
         }
@@ -64,7 +71,13 @@ public class AttributeFacilityKindPage extends AbstractPageWithTable {
     public void updateTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnHeader);
-        attributeFacilityKindList = Service.getAllAttributeFacilityKinds();
+        try {
+            attributeFacilityKindList = Service.getAllAttributeFacilityKinds();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         attributeFacilityKindList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getFacilityKind()}));
         entityTable.setModel(model);
         super.updateTable();

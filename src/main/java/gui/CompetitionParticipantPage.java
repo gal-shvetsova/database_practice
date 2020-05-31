@@ -1,15 +1,14 @@
 package gui;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import dao.Service;
 import gui.addEditPages.AddEditCompetitionParticipant;
 import model.Competition;
 import model.CompetitionParticipant;
 import model.Model;
-import model.Person;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class CompetitionParticipantPage extends AbstractPageWithList {
 
@@ -33,7 +32,13 @@ public class CompetitionParticipantPage extends AbstractPageWithList {
         container.add(competitionComboBox, BorderLayout.NORTH);
         container.add(entityList, BorderLayout.CENTER);
 
-        Service.getCompetitions().forEach(competitionComboBox::addItem);
+        try {
+            Service.getCompetitions().forEach(competitionComboBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         selectedCompetition = competitionComboBox.getItemAt(0);
         updateList();
         removeButton.setEnabled(false);
@@ -42,7 +47,15 @@ public class CompetitionParticipantPage extends AbstractPageWithList {
         });
 
         removeButton.addActionListener(e ->
-                Service.deleteCompetitionParticipant((CompetitionParticipant) entityList.getSelectedValue()));
+        {
+            try {
+                Service.deleteCompetitionParticipant((CompetitionParticipant) entityList.getSelectedValue());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
 
         competitionComboBox.addActionListener(e -> {
             selectedCompetition = (Competition) competitionComboBox.getSelectedItem();
@@ -60,7 +73,13 @@ public class CompetitionParticipantPage extends AbstractPageWithList {
     @Override
     protected void updateList() {
         DefaultListModel<Model> model = new DefaultListModel<>();
-        Service.getPersonsByCompetition(selectedCompetition).forEach(model::addElement);
+        try {
+            Service.getPersonsByCompetition(selectedCompetition).forEach(model::addElement);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         entityList.setModel(model);
         super.updateList();
     }

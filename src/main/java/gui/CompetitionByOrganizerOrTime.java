@@ -5,11 +5,11 @@ import model.Competition;
 import model.Facility;
 import model.Person;
 import model.Sport;
-import sun.tools.jps.Jps;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,23 +58,35 @@ public class CompetitionByOrganizerOrTime extends AbstractFilterPage {
         radioPanel.add(useFacility);
         radioPanel.add(useOrganizer);
 
-        Service.getAllSports().forEach(sportComboBox::addItem);
-        Service.getAllOrganizers().forEach(organizerComboBox::addItem);
-        Service.getAllFacilities().forEach(facilityComboBox::addItem);
+        try {
+            Service.getAllSports().forEach(sportComboBox::addItem);
+            Service.getAllOrganizers().forEach(organizerComboBox::addItem);
+            Service.getAllFacilities().forEach(facilityComboBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         okButton.addActionListener(e -> {
             competitionList.clear();
-            if (useDate.isSelected()) {
-                String postfix = "T18:35:24.00Z";
-                competitionList.addAll(Service.getCompetitionsByDate(
-                        Instant.parse(fromTextField.getText() + postfix),
-                        Instant.parse(toTextField.getText() + postfix)));
-            } else if (useSport.isSelected()) {
-                competitionList.addAll(Service.getCompetitionsBySport((Sport) sportComboBox.getSelectedItem()));
-            } else if (useOrganizer.isSelected()) {
-                competitionList.addAll(Service.getCompetitionsByOrganizer((Person) organizerComboBox.getSelectedItem()));
-            } else if (useFacility.isSelected()) {
-                competitionList.addAll(Service.getCompetitionsByFacility((Facility) facilityComboBox.getSelectedItem()));
+            try {
+                if (useDate.isSelected()) {
+                    String postfix = "T18:35:24.00Z";
+                    competitionList.addAll(Service.getCompetitionsByDate(
+                            Instant.parse(fromTextField.getText() + postfix),
+                            Instant.parse(toTextField.getText() + postfix)));
+                } else if (useSport.isSelected()) {
+                    competitionList.addAll(Service.getCompetitionsBySport((Sport) sportComboBox.getSelectedItem()));
+                } else if (useOrganizer.isSelected()) {
+                    competitionList.addAll(Service.getCompetitionsByOrganizer((Person) organizerComboBox.getSelectedItem()));
+                } else if (useFacility.isSelected()) {
+                    competitionList.addAll(Service.getCompetitionsByFacility((Facility) facilityComboBox.getSelectedItem()));
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             updateTable();
         });

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class CompetitionParticipantDao extends AbstractDao {
-    public static List<CompetitionParticipant> getAllByCompetition(Competition competition){
+    public static List<CompetitionParticipant> getAllByCompetition(Competition competition) throws SQLException {
         String sql = "" +
                 "select p.ID       sportsman_id,\n" +
                 "       p.ROLE     sportsman_role,\n" +
@@ -42,21 +42,21 @@ public class CompetitionParticipantDao extends AbstractDao {
                 CompetitionDao.competitionRowMapper(rs, rowNum), rs.getInt("result"));
     }
 
-    public static void addParticipant(CompetitionParticipant competitionParticipant) {
+    public static void addParticipant(CompetitionParticipant competitionParticipant) throws SQLException {
         String sql = "insert into participant_competition values (?, ?, ?)";
         List<Object> params = Arrays.asList(competitionParticipant.getParticipant().getId().toString(),
                 competitionParticipant.getCompetition().getId().toString(), competitionParticipant.getResult());
         query(sql, params);
     }
 
-    public static void delete(CompetitionParticipant competitionParticipant) {
+    public static void delete(CompetitionParticipant competitionParticipant) throws SQLException {
         String sql = "delete from participant_competition where id_participant = ? and  id_competition = ?";
         List<Object> params = Arrays.asList(competitionParticipant.getParticipant().getId(),
                 competitionParticipant.getCompetition().getId());
         query(sql, params);
     }
 
-    public static List<CompetitionParticipant> getWinnersOf(Competition competition) {
+    public static List<CompetitionParticipant> getWinnersOf(Competition competition) throws SQLException {
         String sql = "" +
                 "select p.ID       sportsman_id,\n" +
                 "       p.ROLE     sportsman_role,\n" +

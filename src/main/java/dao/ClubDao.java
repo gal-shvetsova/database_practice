@@ -9,24 +9,24 @@ import java.util.Collections;
 import java.util.List;
 
 public class ClubDao extends AbstractDao{
-    public static List<Club> getAll(){
+    public static List<Club> getAll() throws SQLException {
         String sql = "select * from club";
         return query(sql, ClubDao::clubRowMapper);
     }
 
-    public static void insert(Club club) {
+    public static void insert(Club club) throws SQLException {
         String sql = "insert into club values (?)";
         List<Object> params = Arrays.asList(new Object[]{club.getName()});
         query(sql, params);
     }
 
-    public static void update(Club oldClub, Club newClub) {
+    public static void update(Club oldClub, Club newClub) throws SQLException {
         String sql = "update club set name = ? where name = ?";
         List<Object> params = Arrays.asList(new Object[]{newClub.getName(), oldClub.getName()});
         query(sql, params);
     }
 
-    public static boolean delete(Club club) {
+    public static boolean delete(Club club) throws SQLException {
         String sql = "select count(*) count from sportsman_characteristic where club = ?";
         List<Object> params = Collections.singletonList(club.getName());
         if (queryCount(sql, params) > 0) {

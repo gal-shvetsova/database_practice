@@ -12,45 +12,45 @@ import java.util.UUID;
 public class PersonDao extends AbstractDao {
 
 
-    public static Person getById(Integer id) {
+    public static Person getById(Integer id) throws SQLException {
         String sql = "select * from person  where id = ?"; //TODO: make parameters
         List<Object> params = Arrays.asList(new Object[]{id});
         return query(sql, params, PersonDao::personRowMapper).get(0);
     }
 
-    public static List<Person> getAll(){
+    public static List<Person> getAll() throws SQLException {
         String sql = "select * from person";
         return query(sql, PersonDao::personRowMapper);
     }
 
-    public static List<Person> getAllByRole(Role role){
+    public static List<Person> getAllByRole(Role role) throws SQLException {
         String sql = "select * from person where role = ?";
         List<Object> params = Collections.singletonList(role.toString());
         return query(sql, params, PersonDao::personRowMapper);
     }
 
 
-    public static Person getByLoginAndPassword(String login, String password) {
+    public static Person getByLoginAndPassword(String login, String password) throws SQLException {
         String sql = "select * from person where login = ? and password = ?";
         List<Object> params = Arrays.asList(new Object[]{login, password});
         List<Person> result = query(sql, params, PersonDao::personRowMapper);
         return result.isEmpty() ? null : result.get(0);
     }
 
-    public static void insert(Person person) {
+    public static void insert(Person person) throws SQLException {
         String sql = "insert into person (id, role, login, password, surname, name) values (?, ?, ?, ?, ?, ?)";
         List<Object> params = Arrays.asList(new Object[]{ UUID.randomUUID(), person.getRole(),
                 person.getLogin(), person.getPassword(), person.getSurname(), person.getName()});
         query(sql, params);
     }
 
-    public static void updatePerson(Person person) {
+    public static void updatePerson(Person person) throws SQLException {
         String sql = "update person set name = ?, surname = ? where id = ?";
         List<Object> params = Arrays.asList(person.getName(), person.getSurname(), person.getId());
         query(sql, params);
     }
 
-    public static void registerSportsman(Sportsman sportsman){
+    public static void registerSportsman(Sportsman sportsman) throws SQLException {
         String sql = "insert into person values " +
                 "(?,?,?,?,?,?)";
         List<Object> params = Arrays.asList(sportsman.getId().toString(), sportsman.getRole().toString(), sportsman.getLogin(),
@@ -91,14 +91,14 @@ public class PersonDao extends AbstractDao {
                 rs.getString("trainer_name"));
     }
 
-    public static void registerPerson(Person person) {
+    public static void registerPerson(Person person) throws SQLException {
         String sql = "insert into person values (?,?,?,?,?,?)";
         List<Object> params = Arrays.asList(person.getId().toString(), person.getRole().toString(),
                 person.getLogin(), person.getPassword(), person.getSurname(), person.getName());
         query(sql, params);
     }
 
-    public static List<Person> getAllByCompetition(Competition competition) {
+    public static List<Person> getAllByCompetition(Competition competition) throws SQLException {
         String sql = "" +
                 "select p.ID       id,\n" +
                 "       p.ROLE     role,\n" +
@@ -113,7 +113,7 @@ public class PersonDao extends AbstractDao {
         return query(sql, params, PersonDao::personRowMapper);
     }
 
-    public static List<Person> getNotParticipantsOf(Competition competition) {
+    public static List<Person> getNotParticipantsOf(Competition competition) throws SQLException {
         String sql = "" +
                 "select *\n" +
                 "from PERSON P\n" +

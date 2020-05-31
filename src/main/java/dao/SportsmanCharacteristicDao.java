@@ -16,7 +16,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
     private static final Integer DEFAULT_RIGHT_BORDER = 0;
     private static final Integer DEFAULT_LEFT_BORDER = 100;
 
-    public static List<SportsmanCharacteristic> getAll() {
+    public static List<SportsmanCharacteristic> getAll() throws SQLException {
         String sql = "" +
                 "select s.name      sportsman_name,\n" +
                 "       s.id        sportsman_id,\n" +
@@ -38,7 +38,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
         return query(sql, SportsmanCharacteristicDao::sportsmanCharacteristicRowMapper);
     }
 
-    public static boolean delete(SportsmanCharacteristic sportsmanCharacteristic) {
+    public static boolean delete(SportsmanCharacteristic sportsmanCharacteristic) throws SQLException {
         String sql = "select count(*) from sportsman_characteristic where id_sportsman = ?";
         List<Object> params = Collections.singletonList(sportsmanCharacteristic.getSportsman().getId());
         if (queryCount(sql, params) > 0) {
@@ -50,7 +50,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
         }
     }
 
-    public static void create(SportsmanCharacteristic sportsmanCharacteristic) {
+    public static void create(SportsmanCharacteristic sportsmanCharacteristic) throws SQLException {
         String sql = "insert into sportsman_characteristic values (?,?,?,?,?)";
         List<Object> params = Arrays.asList(sportsmanCharacteristic.getSportsman().getId(),
                 sportsmanCharacteristic.getSport().getName(), sportsmanCharacteristic.getCategory(),
@@ -58,7 +58,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
         query(sql, params);
     }
 
-    public static void update(SportsmanCharacteristic oldSC, SportsmanCharacteristic newSc) {
+    public static void update(SportsmanCharacteristic oldSC, SportsmanCharacteristic newSc) throws SQLException {
         String sql = "update sportsman_characteristic set sport = ?, category = ?, id_trainer = ?, club = ?";
         PersonDao.updatePerson(newSc.getSportsman());
         List<Object> params = Arrays.asList(newSc.getSport().getName(), newSc.getCategory(),
@@ -73,7 +73,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
     }
 
     public static List<SportsmanCharacteristic> getBySportOrCategory(Sport sport, Person trainer,
-                                                                     Integer from, Integer to) {
+                                                                     Integer from, Integer to) throws SQLException {
         if (from == null) {
             from = DEFAULT_RIGHT_BORDER;
         }
@@ -134,7 +134,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
 
     }
 
-    public static List<Person> getTrainersForSportsman(Person sportsman) {
+    public static List<Person> getTrainersForSportsman(Person sportsman) throws SQLException {
         String sql = "" +
                 "select t.name     trainer_name, \n" +
                 "                       t.id       trainer_id, \n" +
@@ -149,7 +149,7 @@ public class SportsmanCharacteristicDao extends AbstractDao {
         return query(sql, params, PersonDao::trainerRowMapper);
     }
 
-    public static List<Person> getTrainersBySport(Sport sport) {
+    public static List<Person> getTrainersBySport(Sport sport) throws SQLException {
         String sql = "" +
                 "select t.name     trainer_name, \n" +
                 "                       t.id       trainer_id, \n" +

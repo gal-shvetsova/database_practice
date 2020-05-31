@@ -8,6 +8,7 @@ import model.Role;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class FacilityPage extends AbstractPageWithTable {
@@ -16,8 +17,8 @@ public class FacilityPage extends AbstractPageWithTable {
     private Object[] columnsHeader = new String[]{"Name", "Address", "Kind"};
     private List<Facility> facilityList;
 
-    public static FacilityPage getInstance(){
-        if (instance == null){
+    public static FacilityPage getInstance() {
+        if (instance == null) {
             instance = new FacilityPage();
         }
         return instance;
@@ -41,8 +42,14 @@ public class FacilityPage extends AbstractPageWithTable {
             editButton.addActionListener(e ->
                     new AddEditFacilityPage(facilityList.get(entityTable.getSelectedRow())));
             removeButton.addActionListener(e -> {
-                if (!Service.deleteFacility(facilityList.get(entityTable.getSelectedRow()))){
-                    Utils.createErrorDialog(this, "Can not delete facility", "Error");
+                try {
+                    if (!Service.deleteFacility(facilityList.get(entityTable.getSelectedRow()))) {
+                        Utils.createErrorDialog(this, "Can not delete facility", "Error");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
             editButton.setEnabled(false);
@@ -57,10 +64,16 @@ public class FacilityPage extends AbstractPageWithTable {
     protected void updateTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnsHeader);
-        facilityList = Service.getAllFacilities();
+        try {
+            facilityList = Service.getAllFacilities();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         facilityList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getAddress(),
                 e.getKind().getName()}));
         entityTable.setModel(model);
-       super.updateTable();
+        super.updateTable();
     }
 }

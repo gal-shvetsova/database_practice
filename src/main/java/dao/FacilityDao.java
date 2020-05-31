@@ -14,26 +14,26 @@ public class FacilityDao extends AbstractDao {
     private static final int DEFAULT_ATTR_RIGHT_BORDER = 0;
     private static final Integer DEFAULT_ATTR_LEFT_BORDER = 1000000;
 
-    public static List<Facility> getAll() {
+    public static List<Facility> getAll() throws SQLException {
         final String sql = "select * from facility";
         return query(sql, FacilityDao::facilityRowManager);
     }
 
-    public static Facility getByName(String name) {
+    public static Facility getByName(String name) throws SQLException {
         final String sql = "select * from facility where name = ?";
         List<Object> params = Arrays.asList(new Object[]{name});
         List<Facility> result = query(sql, params, FacilityDao::facilityRowManager);
         return result.isEmpty() ? null : result.get(0);
     }
 
-    public static void create(Facility facility) {
+    public static void create(Facility facility) throws SQLException {
         final String sql = "insert into facility values (?, ?, ?)";
         List<Object> params = Arrays.asList(facility.getName(),
                 facility.getAddress(), facility.getKind().getName());
         query(sql, params);
     }
 
-    public static void update(Facility oldFacility, Facility newFacility) {
+    public static void update(Facility oldFacility, Facility newFacility) throws SQLException {
         final String sql = "update facility set name = ?, address = ?, kind = ? where name = ?";
         List<Object> params = Arrays.asList(newFacility.getName(), newFacility.getAddress(),
                 newFacility.getKind().getName(),
@@ -46,7 +46,7 @@ public class FacilityDao extends AbstractDao {
                 new FacilityKind(rs.getString("kind")));
     }
 
-    public static boolean delete(Facility facility) {
+    public static boolean delete(Facility facility) throws SQLException {
         String sql = "select count(*) count from competition where facility = ?";
         List<Object> params = Collections.singletonList(facility.getName());
         if (queryCount(sql, params) > 0) {
@@ -58,14 +58,14 @@ public class FacilityDao extends AbstractDao {
         }
     }
 
-    public static List<Facility> getAllByKind(FacilityKind facilityKind) {
+    public static List<Facility> getAllByKind(FacilityKind facilityKind) throws SQLException {
         String sql = "select * from facility where kind = ?";
         List<Object> params = Collections.singletonList(facilityKind.getName());
         return query(sql, params, FacilityDao::facilityRowManager);
     }
 
     public static List<Facility> getByParams(FacilityKind facilityKind, AttributeFacilityKind attributeFacilityKind,
-                                             Integer from, Integer to, boolean useAttr) {
+                                             Integer from, Integer to, boolean useAttr) throws SQLException {
         if (from == null || to < 0) {
             from = DEFAULT_ATTR_RIGHT_BORDER;
         }

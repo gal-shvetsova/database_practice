@@ -8,6 +8,7 @@ import model.Role;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class CompetitionPage extends AbstractPageWithTable {
@@ -43,8 +44,14 @@ public class CompetitionPage extends AbstractPageWithTable {
             editButton.addActionListener(e ->
                     new AddEditCompetitionPage(competitionList.get(entityTable.getSelectedRow())));
             removeButton.addActionListener(e -> {
-                if (!Service.deleteCompetition(competitionList.get(entityTable.getSelectedRow()))) {
-                    Utils.createErrorDialog(this, "Can not delete competition", "Error");
+                try {
+                    if (!Service.deleteCompetition(competitionList.get(entityTable.getSelectedRow()))) {
+                        Utils.createErrorDialog(this, "Can not delete competition", "Error");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
         }
@@ -61,7 +68,13 @@ public class CompetitionPage extends AbstractPageWithTable {
     protected void updateTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnsHeader);
-        competitionList = Service.getCompetitions();
+        try {
+            competitionList = Service.getCompetitions();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         competitionList.forEach(e -> model.addRow(new Object[]{e.getName(), e.getSport(), e.getFacility().getName(),
                 e.getStartDate(), e.getFinishDate(), e.getOrganizer()}));
         entityTable.setModel(model);

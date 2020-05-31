@@ -5,6 +5,7 @@ import model.FacilityKind;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class AddEditFacilityKindPage extends AddEditPage<FacilityKind> {
 
@@ -19,7 +20,7 @@ public class AddEditFacilityKindPage extends AddEditPage<FacilityKind> {
         if (facilityKind != null) {
             nameField.setText(entity.getName());
         }
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new GridLayout(0, 1));
         panel.add(nameLabel);
         panel.add(nameField);
 
@@ -28,10 +29,16 @@ public class AddEditFacilityKindPage extends AddEditPage<FacilityKind> {
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
             entity = new FacilityKind(nameField.getText());
-            if (isUpdate){
-                Service.updateFacilityKind(oldEntity, entity);
-            } else {
-                Service.createFacilityKind(entity);
+            try {
+                if (isUpdate) {
+                    Service.updateFacilityKind(oldEntity, entity);
+                } else {
+                    Service.createFacilityKind(entity);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             okButton.setEnabled(true);
             cancelButton.setEnabled(true);

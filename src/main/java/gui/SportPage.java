@@ -8,10 +8,10 @@ import model.Sport;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class SportPage extends AbstractPageWithList {
     private static SportPage instance;
-
 
     public static SportPage getInstance() {
         if (instance == null) {
@@ -39,8 +39,14 @@ public class SportPage extends AbstractPageWithList {
             addButton.addActionListener(e -> new AddEditSportPage(null));
             editButton.addActionListener(e -> new AddEditSportPage((Sport) entityList.getSelectedValue()));
             removeButton.addActionListener(e -> {
-                if (!Service.deleteSport((Sport) entityList.getSelectedValue())) {
-                    Utils.createErrorDialog(this, "Can not delete sport", "Error");
+                try {
+                    if (!Service.deleteSport((Sport) entityList.getSelectedValue())) {
+                        Utils.createErrorDialog(this, "Can not delete sport", "Error");
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this,
+                            "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
         }
@@ -51,7 +57,13 @@ public class SportPage extends AbstractPageWithList {
     @Override
     public void updateList() {
         DefaultListModel<Model> model = new DefaultListModel<>();
-        Service.getAllSports().forEach(model::addElement);
+        try {
+            Service.getAllSports().forEach(model::addElement);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         entityList.setModel(model);
         super.updateList();
     }

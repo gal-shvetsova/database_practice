@@ -8,6 +8,7 @@ import model.Sportsman;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.List;
 
 public class SportsmanPage extends AbstractPageWithTable {
@@ -54,7 +55,13 @@ public class SportsmanPage extends AbstractPageWithTable {
     protected void updateTable() {
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(columnsHeader);
-        sportsmen = Service.getAllSportsmen();
+        try {
+            sportsmen = Service.getAllSportsmen();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
         sportsmen.forEach(e -> model.addRow(new Object[]{e.getName(), e.getSurname(), e.getSport(), e.getClub()}));
         entityTable.setModel(model);
         super.updateTable();

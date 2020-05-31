@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AttributeFacilityDao extends AbstractDao{
-    public static List<AttributeFacility> getAll(){
+    public static List<AttributeFacility> getAll() throws SQLException {
         String sql = "" +
                 "select\n" +
                 "    af.VALUE value,\n" +
@@ -25,14 +25,14 @@ public class AttributeFacilityDao extends AbstractDao{
         return query(sql, AttributeFacilityDao::attributeFacilityRowMapper);
     }
 
-    public static void create(AttributeFacility attributeFacility){
+    public static void create(AttributeFacility attributeFacility) throws SQLException {
         String sql = "insert into ATTRIBUTE_FACILITY values (?,?,?)";
         List<Object> params = Arrays.asList(attributeFacility.getAttributeFacilityKind().getName(),
                 attributeFacility.getFacility().getName(), attributeFacility.getValue());
         query(sql, params);
     }
 
-    public static void delete(AttributeFacility attributeFacility){
+    public static void delete(AttributeFacility attributeFacility) throws SQLException {
         String sql = "delete from ATTRIBUTE_FACILITY where name_attribute = ? and id_facility = ?";
         List<Object> params = Arrays.asList(attributeFacility.getAttributeFacilityKind().getName(),
                 attributeFacility.getFacility().getName());

@@ -6,6 +6,7 @@ import model.FacilityKind;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class AddEditFacilityPage extends AddEditPage<Facility> {
     public AddEditFacilityPage(Facility facility) {
@@ -21,7 +22,7 @@ public class AddEditFacilityPage extends AddEditPage<Facility> {
         final JLabel kindLabel = new JLabel("Kind");
 
         final JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(0,1));
+        panel.setLayout(new GridLayout(0, 1));
 
         panel.add(nameLabel);
         panel.add(nameField);
@@ -30,7 +31,13 @@ public class AddEditFacilityPage extends AddEditPage<Facility> {
         panel.add(kindLabel);
         panel.add(kindCheckBox);
 
-        Service.getAllFacilityKinds().forEach(kindCheckBox::addItem);
+        try {
+            Service.getAllFacilityKinds().forEach(kindCheckBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         if (facility != null) {
             nameField.setText(facility.getName());
@@ -45,10 +52,16 @@ public class AddEditFacilityPage extends AddEditPage<Facility> {
                     (FacilityKind) kindCheckBox.getSelectedItem());
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
-            if (isUpdate) {
-                Service.updateFacility(oldEntity, entity);
-            } else {
-                Service.createFacility(entity);
+            try {
+                if (isUpdate) {
+                    Service.updateFacility(oldEntity, entity);
+                } else {
+                    Service.createFacility(entity);
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
             okButton.setEnabled(true);
             cancelButton.setEnabled(true);

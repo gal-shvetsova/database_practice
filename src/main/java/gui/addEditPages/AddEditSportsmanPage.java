@@ -1,10 +1,14 @@
 package gui.addEditPages;
 
 import dao.Service;
-import model.*;
+import model.Club;
+import model.Person;
+import model.Sport;
+import model.Sportsman;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class AddEditSportsmanPage extends AddEditPage<Sportsman> {
 
@@ -44,9 +48,15 @@ public class AddEditSportsmanPage extends AddEditPage<Sportsman> {
 
         container.add(panel, BorderLayout.NORTH);
 
-        Service.getAllTrainers().forEach(trainerComboBox::addItem);
-        Service.getAllSports().forEach(sportComboBox::addItem);
-        Service.getAllClubs().forEach(clubComboBox::addItem);
+        try {
+            Service.getAllTrainers().forEach(trainerComboBox::addItem);
+            Service.getAllSports().forEach(sportComboBox::addItem);
+            Service.getAllClubs().forEach(clubComboBox::addItem);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this,
+                    "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
         if (sportsman != null) {
             nameField.setText(sportsman.getName());
@@ -68,7 +78,13 @@ public class AddEditSportsmanPage extends AddEditPage<Sportsman> {
 
             okButton.setEnabled(false);
             cancelButton.setEnabled(false);
-            Service.updateSportsman(oldEntity, entity);
+            try {
+                Service.updateSportsman(oldEntity, entity);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this,
+                        "Error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
             okButton.setEnabled(true);
             cancelButton.setEnabled(true);
             oldEntity = entity;
