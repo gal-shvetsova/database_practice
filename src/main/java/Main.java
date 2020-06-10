@@ -13,8 +13,7 @@ public class Main {
     public static void main(String[] args) {
         Properties dbProperties;
         Properties sshProperties;
-        try (InputStream inputStream =
-                     Main.class.getClassLoader().getResourceAsStream("db.properties");
+        try (InputStream inputStream = Main.class.getClassLoader().getResourceAsStream("db.properties");
              InputStream inputStreamSsh = Main.class.getClassLoader().getResourceAsStream("ssh.properties")) {
             dbProperties = new Properties();
             dbProperties.load(inputStream);

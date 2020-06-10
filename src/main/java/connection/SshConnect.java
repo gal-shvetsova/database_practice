@@ -1,7 +1,6 @@
 package connection;
 
 import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 import java.util.Properties;
@@ -29,7 +28,7 @@ public class SshConnect implements AutoCloseable {
             session.setConfig(config);
             session.connect();
             session.setPortForwardingL(localPort, remoteHost, remotePort);
-        } catch (JSchException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
