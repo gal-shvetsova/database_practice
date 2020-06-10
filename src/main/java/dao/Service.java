@@ -1,12 +1,10 @@
 package dao;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import connection.JdbcConnection;
 import model.*;
 
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
 
 public class Service {
