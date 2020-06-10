@@ -7,6 +7,7 @@ import gui.PageManager;
 import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class Main {
